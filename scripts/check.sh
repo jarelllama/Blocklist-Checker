@@ -56,14 +56,22 @@ process_blocklist() {
     in_tranco="$(comm -12 blocklist.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
+    # To reduce processing time, 60% of the domains are randomly picked to be
+    # processed by the dead check.
+    sixty_percent="$(( $(wc -l < blocklist.tmp) * 60 / 100 ))"
+    shuf -n "$sixty_percent" blocklist.tmp > temp
+
     # Format to Adblock Plus syntax for Dead Domains Linter
-    sed 's/.*/||&^/' blocklist.tmp > temp
+    sed -i 's/.*/||&^/' temp
+
     # Check for dead domains
     dead-domains-linter -i temp --export dead.tmp
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead.tmp)"
-    dead_percentage="$(( dead_count * 100 / entries_count ))"
+    # Note that the dead percentage is calculated off the 60% percent random
+    # domains selected for the dead check.
+    dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
     # Find unique and duplicate domains in other blocklists
     table="| Unique | Blocklist |\n| ---:|:--- |\n"
