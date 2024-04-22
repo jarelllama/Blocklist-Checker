@@ -9,7 +9,7 @@ main() {
 
     process
 
-    print_stats
+    #print_stats
 
     generate_results
 }
@@ -88,13 +88,6 @@ print_stats() {
 
     printf "* Number of dead domains: %s (%s%%)\n\n" "$dead_count" \
         "$(( dead_count*100/entries_before ))"
-
-    # Export variables for use in workflow
-    export ENTRIES_BEFORE="$entries_before"
-    export LINES_REMOVED="$lines_removed"
-    export ENTRIES_AFTER="$entries_after"
-    export IN_TRANCO="$in_tranco"
-    export DEAD_COUNT="$dead_count"
 }
 
 compile() {
