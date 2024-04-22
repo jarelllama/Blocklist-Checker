@@ -1,20 +1,9 @@
 #!/bin/bash
 
 readonly TEMPLATE='data/TEMPLATE.md'
+readonly URL="$1"
 
 main() {
-    # Download blocklist
-    curl -L "$1" -o blocklist.tmp
-    printf "\n"
-
-    process
-
-    #print_stats
-
-    generate_results
-}
-
-process() {
     # Install AdGuard's Hostlist Compiler
     if ! command -v hostlist-compiler &> /dev/null; then
         npm install -g @adguard/hostlist-compiler > /dev/null
@@ -25,8 +14,20 @@ process() {
         npm install -g @adguard/dead-domains-linter > /dev/null
     fi
 
-    # Create Hostlist Compiler config
-    create_config
+    # Download blocklist
+    curl -L "$URL" -o blocklist.tmp
+
+    # Get blocklist title if present, otherwise, use blocklist URL
+    title="$(mawk -F ': ' '/Title:/ {print $2}' blocklist.tmp)"
+    [[ -z "$title" ]] && title="$URL"
+
+    process_blocklist
+
+    generate_results
+}
+
+process_blocklist() {
+    create_hostlist_compiler_config
 
     # Remove comments and compile to standardized domains format
     compile -c config.json blocklist.tmp
@@ -36,22 +37,27 @@ process() {
 
     # Checked for entries removed by Hostlist Compiler
     compile -i blocklist.tmp compiled.tmp
-    lines_removed="$(grep -vxFf compiled.tmp blocklist.tmp)"
-    entries_after="$(wc -l < compiled.tmp)"
+    entries_removed="$(grep -vxFf compiled.tmp blocklist.tmp)"
+    entries_removed_count="$(wc -w <<< "$entries_removed")"
+    entries_removed_percentage="$(( entries_removed_count * 100 / entries_count ))"
+    compiled_entries_count="$(wc -l < compiled.tmp)"
 
     # Check for domains in Tranco
-    curl -sSL 'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
+    curl -sSL --retry 2 --retry-all-errors \
+        'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
     in_tranco="$(grep -xFf blocklist.tmp tranco.tmp)"
+    in_tranco_count="$(wc -w <<< "$in_tranco")"
 
-    # Check for dead domains
+    # Format to Adblock Plus syntax for Dead Domains Linter
     sed 's/.*/||&^/' blocklist.tmp > temp
+    # Check for dead domains
     printf "\n"
-    # DISABLE FOR NOW
-    #dead-domains-linter -i temp --export dead.tmp
-    # wc -l shows 0 dead when there 1 dead domain. Seemingly because the Dead
+    dead-domains-linter -i temp --export dead.tmp
+    # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
-    #dead_count="$(wc -w < dead.tmp)"
+    dead_count="$(wc -w < dead.tmp)"
+    dead_percentage="$(( dead_count * 100 / entries_count ))"
 
     # Check for domain coverage in other blocklists
     blocklists=(
@@ -66,37 +72,32 @@ process() {
     #done
 }
 
-generate_results() {
-    replace 'ENTRIES_COUNT' "$entries_count"
-}
-
+# Function 'replace' updates the markdown template with values from the results.
+# Input:
+#   $1: keyword to replace
+#   $2: replacement
 replace() {
-    sed -i "s/${1}/{$2}/g" "$TEMPLATE"
+    sed -i "s/${1}/${2}/g" "$TEMPLATE"
 }
 
-print_stats() {
-    printf "\n* Number of raw entries: %s\n\n" "$entries_before"
-
-    printf "* Lines removed by Hostlist Compiler (%s):\n---\n%s\n---\n\n" \
-        "$(wc -w <<< "$lines_removed")" "$lines_removed"
-
-    printf "* Number of entries after compiling: %s (%s%% removed)\n\n" \
-        "$entries_after" "$(( ( entries_before - entries_after )*100/entries_before ))"
-
-    printf "* Domains found in Tranco (%s):\n---\n%s\n---\n\n" \
-        "$(wc -w <<< "$in_tranco")" "$in_tranco"
-
-    printf "* Number of dead domains: %s (%s%%)\n\n" "$dead_count" \
-        "$(( dead_count*100/entries_before ))"
+# Function 'generate_results' creates the markdown results to reply to the
+# issue with.
+generate_results() {
+    replace TITLE "$title"
+    replace URL "$URL"
+    replace ENTRIES_COUNT "$entries_count"
+    replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
+    replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
+    replace COMPILED_ENTRIES_COUNT "$compiled_entries_count"
+    replace IN_TRANCO "$in_tranco"
+    replace IN_TRANCO_COUNT "$in_tranco_count"
+    replace DEAD_COUNT "$dead_count"
+    replace DEAD_PERCENTAGE "$dead_percentage"
 }
 
-compile() {
-    printf "\n"
-    hostlist-compiler "$1" "$2" -o temp
-    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp > "$3"
-}
-
-create_config() {
+# Function 'create_hostlist_compiler_config' creates the temporary
+# configuration file for the Hostlist Compiler.
+create_hostlist_compiler_config() {
     cat << EOF > config.json
 {
 "name": "Blocklist",
@@ -108,6 +109,20 @@ create_config() {
 ]
 }
 EOF
+}
+
+# Function 'compile' compiles the blocklist using AdGuard's Hostlist Compiler
+# and outputs the compiled blocklist without comments.
+# Input:
+#   $1: argument to pass to Hostlist Compiler
+#   $2: argument to pass to Hostlist Compiler
+#   $3: name of file to output
+# Output:
+#   file passed in $3
+compile() {
+    printf "\n"
+    hostlist-compiler "$1" "$2" -o temp
+    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp > "$3"
 }
 
 main "$1"
