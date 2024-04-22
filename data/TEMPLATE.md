@@ -18,9 +18,9 @@ IN_TRANCO
 
 Number of dead domains: DEAD_COUNT (DEAD_PERCENTAGE%)
 
-Domains not found in checked blocklists: UNIQUE_COUNT (UNIQUE_PERCENTAGE%)
+Unique domains not found in other blocklists: UNIQUE_COUNT (UNIQUE_PERCENTAGE%)
 
-Domains found in checked blocklists:
+Duplicate domains found in other blocklists:
 
 DUPLICATE_TABLE
 
