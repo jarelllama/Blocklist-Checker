@@ -107,7 +107,7 @@ replace() {
 # Function 'generate_results' creates the markdown results to reply to the
 # issue with.
 generate_results() {
-    replace TITLE "$title"
+    replace TITLE "${title//\//\\/}"  # Escape slashes
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
     replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
