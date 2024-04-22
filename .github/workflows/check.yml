@@ -19,8 +19,14 @@ jobs:
 
       - name: Check blocklist
         run: |
+          # On error
           trap 'gh issue comment ${{ github.event.issue.number }} -b \
-          "An error occured while checking the blocklist."' EXIT
+          "An error occured while checking the blocklist." \
+            && gh issue edit ${{ github.event.issue.number }} \
+            --add-label "errored"' EXIT
+
+          # Add 'checking' label
+          gh issue edit ${{ github.event.issue.number }} --add-label 'checking'
 
           # Get URl of blocklist
           url="$(grep 'http' <<< "${{ github.event.issue.body }}")"
