@@ -1,6 +1,7 @@
 #!/bin/bash
 
 readonly TEMPLATE='data/TEMPLATE.md'
+readonly BLOCKLISTS_TO_COMPARE='data/blocklists_to_compare.txt'
 readonly URL="$1"
 
 main() {
@@ -13,6 +14,8 @@ main() {
     if ! command -v dead-domains-linter &> /dev/null; then
         npm install -g @adguard/dead-domains-linter > /dev/null
     fi
+
+    execution_time="$(date +%s)"
 
     # Download blocklist
     curl -L "$URL" -o blocklist.tmp
@@ -43,7 +46,7 @@ process_blocklist() {
     compiled_entries_count="$(wc -l < compiled.tmp)"
 
     # Check for domains in Tranco
-    curl -sSL --retry 2 --retry-all-errors \
+    curl -L --retry 2 --retry-all-errors \
         'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
     in_tranco="$(grep -xFf blocklist.tmp tranco.tmp)"
@@ -59,17 +62,21 @@ process_blocklist() {
     dead_count="$(wc -w < dead.tmp)"
     dead_percentage="$(( dead_count * 100 / entries_count ))"
 
-    # Check for domain coverage in other blocklists
-    blocklists=(
-        https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/tif.txt
-        https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/ultimate.txt
-    )
+    # Find unique and duplicate domains in other blocklists
+    printf "| Duplicates | Blocklist |\n| ---:| --- |\n" > duplicate_table.tmp
 
-    #for blocklist in "${blocklists[@]}"; do
-    #    curl -sSL "$blocklist" -o external_blocklist.tmp
-    #    compile -i external_blocklist.tmp -o external_blocklist.tmp
-    #    comm -23 compiled.tmp external_blocklist.tmp
-    #done
+    while read -r blocklist; do
+        name="$(mawk -F ":" '{print $1}' <<< "$blocklist")"
+        url="$(mawk -F ":" '{print $2}' <<< "$blocklist")"
+
+        curl -sSL "$url" -o external_blocklist.tmp
+        compile -i external_blocklist.tmp -o external_blocklist.tmp
+
+        unique_count="$(comm -23 compiled.tmp external_blocklist.tmp | wc -w)"
+        unique_percentage="$(( unique_count * 100 / compiled_entries_count ))"
+        duplicate_count="$(comm -12 compiled.tmp external_blocklist.tmp | wc -w)"
+        printf "| %s | %s |\n" "$duplicate_count" "$name" >> duplicate_table.tmp
+    done < "$BLOCKLISTS_TO_COMPARE"
 }
 
 # Function 'replace' updates the markdown template with values from the results.
@@ -83,17 +90,24 @@ replace() {
 # Function 'generate_results' creates the markdown results to reply to the
 # issue with.
 generate_results() {
+    end_time="$(date +%s)"
+
     replace TITLE "$title"
     replace URL "$URL"
-    replace ENTRIES_COUNT "$entries_count"
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
     replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
     replace ENTRIES_REMOVED "$entries_removed"
     replace COMPILED_ENTRIES_COUNT "$compiled_entries_count"
-    replace IN_TRANCO "$in_tranco"
+    replace ENTRIES_COUNT "$entries_count"
     replace IN_TRANCO_COUNT "$in_tranco_count"
+    replace IN_TRANCO "$in_tranco"
     replace DEAD_COUNT "$dead_count"
     replace DEAD_PERCENTAGE "$dead_percentage"
+    replace UNIQUE_COUNT "$unique_count"
+    replace UNIQUE_PERCENTAGE "$unique_percentage"
+    replace DUPLICATE_TABLE "$(<duplicate_table.tmp)"
+    replace PROCESSING_TIME "$(( end_time - execution_time ))"
+    replace GENERATION_TIME "$(date -u)"
 }
 
 # Function 'create_hostlist_compiler_config' creates the temporary

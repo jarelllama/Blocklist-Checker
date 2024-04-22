@@ -22,7 +22,8 @@ Domains not found in checked blocklists: UNIQUE_COUNT (UNIQUE_PERCENTAGE%)
 
 Domains found in checked blocklists:
 
-| Duplicates | Blocklist |
-| ---:| --- |
-| IN_HAGEZI_TIF | Hagezi's TIF Full |
-| IN_HAGEZI_ULTIMATE | Hagezi's Multi ULTIMATE |
+DUPLICATE_TABLE
+
+Processing time: PROCESSING_TIME seconds
+
+Report generated at GENERATION_TIME
