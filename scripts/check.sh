@@ -118,8 +118,10 @@ generate_report() {
     # -z learnt from :https://linuxhint.com/newline_replace_sed/
     invalid_entries="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$invalid_entries")"
     in_tranco="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$in_tranco")"
+    # Escape slashes and &
+    title="$(sed 's/[/&]/\\&/g' <<< "$title")"
 
-    replace TITLE "${title//\//\\/}"  # Escape slashes
+    replace TITLE "$title"
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
     replace COMPRESSED_COUNT "$compressed_count"
