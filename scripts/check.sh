@@ -108,7 +108,7 @@ generate_results() {
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace UNIQUE_COUNT "$unique_count"
     replace UNIQUE_PERCENTAGE "$unique_percentage"
-    replace DUPLICATE_TABLE "$table"
+    #replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }
