@@ -20,11 +20,11 @@ jobs:
       - name: Check blocklist from issue
         run: |
           bash scripts/check.sh ${{ github.event.issue.body }}
-          echo "$ENTRIES_BEFORE" >> $GITHUB_ENV
-          echo "$LINES_REMOVED" >> $GITHUB_ENV
-          echo "$ENTRIES_AFTER" >> $GITHUB_ENV
-          echo "$IN_TRANCO" >> $GITHUB_ENV
-          echo "$DEAD_COUNT" >> $GITHUB_ENV
+          echo "ENTRIES_BEFORE=$ENTRIES_BEFORE" >> $GITHUB_ENV
+          echo "LINES_REMOVED=$LINES_REMOVED" >> $GITHUB_ENV
+          echo "ENTRIES_AFTER=$ENTRIES_AFTER" >> $GITHUB_ENV
+          echo "IN_TRANCO=$IN_TRANCO" >> $GITHUB_ENV
+          echo "DEAD_COUNT=$DEAD_COUNT" >> $GITHUB_ENV
 
       - name: Comment results
         run: |
