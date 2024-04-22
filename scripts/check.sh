@@ -146,7 +146,7 @@ create_hostlist_compiler_config() {
 "sources": [
     {
     "source": "raw.tmp",
-    "transformations": ["RemoveComments", "Compress"]
+    "transformations": ["RemoveComments", "Compress", "RemoveModifiers"]
     }
 ]
 }
