@@ -17,8 +17,8 @@ main() {
 
     execution_time="$(date +%s)"
 
-    # Download blocklist
-    curl -L "$URL" -o raw.tmp
+    # Download blocklist and exit if errored
+    curl -L "$URL" -o raw.tmp || exit 1
     # Intentionally not removing duplicate entries
     sort raw.tmp -o raw.tmp
 

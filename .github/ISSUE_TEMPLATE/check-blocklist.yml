@@ -6,7 +6,7 @@ body:
   - type: input
     attributes:
       label: Enter the URL of the blocklist's raw file
-      description: Please only enter one blocklist per issue.
+      description: Please allow a few minutes for the report to generate.
       placeholder: https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/wildcard_domains/scams.txt
     validations:
       required: true
