@@ -6,7 +6,7 @@ Description is WIP
 
 ### Number of domains
 
-The number of domains in the blocklist calculated after processing through [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler) to remove comments.
+The number of domains in the blocklist calculated after processing through [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler) to standardize the format of the blocklist and to remove comments.
 
 The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?tab=readme-ov-file#-transformations) were applied:
 
