@@ -68,14 +68,16 @@ process_blocklist() {
         name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
 
-        # Only the compiled version of the blocklist is used here so we can
-        # overwrite it.
-        curl -L "$url" -o blocklist.tmp
-        compile -c config.json -o external_blocklist.tmp
+        # Note that currently only blocklists in domains format are supported
+        # for comparing (ABP requires also converting blocklist.tmp to ABP).
+        curl -L "$url" -o external_blocklist.tmp
+        # Get entries, ignoring comments
+        mawk '!/#/' external_blocklist.tmp > temp
+        mv temp external_blocklist.tmp
 
-        unique_count="$(comm -23 compiled.tmp external_blocklist.tmp | wc -w)"
-        unique_percentage="$(( unique_count * 100 / compiled_entries_count ))"
-        duplicate_count="$(comm -12 compiled.tmp external_blocklist.tmp | wc -w)"
+        unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
+        unique_percentage="$(( unique_count * 100 / entries_count ))"
+        duplicate_count="$(comm -12 blocklist.tmp external_blocklist.tmp | wc -w)"
         printf "\| %s \| %s \|\n" "$duplicate_count" "$name" >> duplicate_table.tmp
     done < "$BLOCKLISTS_TO_COMPARE"
 }
