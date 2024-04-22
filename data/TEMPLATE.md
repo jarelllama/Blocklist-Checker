@@ -2,18 +2,26 @@
 
 <URL>
 
-Number of domains: ENTRIES_COUNT
+Number of raw entries: RAW_COUNT
+
+Number of compressed entries: COMPRESSED_COUNT
 
 <details>
-<summary>Entries removed by Hostlist Compiler: ENTRIES_REMOVED_COUNT (ENTRIES_REMOVED_PERCENTAGE%)</summary>
-ENTRIES_REMOVED
-</details>
+<summary>Invalid entries: INVALID_ENTRIES_COUNT (INVALID_ENTRIES_PERCENTAGE%)</summary>
 
-Number of entries after compiling: COMPILED_ENTRIES_COUNT
+``` text
+INVALID_ENTRIES
+```
+
+</details>
 
 <details>
 <summary>Domains found in Tranco: IN_TRANCO_COUNT</summary>
+
+``` text
 IN_TRANCO
+```
+
 </details>
 
 Percentage of dead domains: (DEAD_PERCENTAGE%)

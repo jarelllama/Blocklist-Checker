@@ -4,22 +4,19 @@ Description is WIP
 
 ## Report
 
-### Number of domains
+### Number of raw entries
 
-The number of entries in the blocklist calculated after processing through [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler) to standardize the format of the blocklist and to remove comments. This includes non-domain entries like IP addresses.
+The number of entries[^1] in the blocklist calculated after removing comments and the `[Adblock Plus]` header.
+
+### Number of compressed entries
+
+The number of entries after compression via [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler).
+
+### Invalid entries
+
+The number of entries deemed invalid and removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
 
 The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?tab=readme-ov-file#-transformations) were applied:
-
-* RemoveComments
-* Compress[^1]
-
-[^1]: Used to convert the various formats of blocklists to Adblock Plus syntax and then to Domains in order to standardize the format of the blocklist. Note that this removes redundant domains/rules which may affect the calculations.
-
-### Entries removed by Hostlist Compiler
-
-The number of entries removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
-
-The following transformations were applied:
 
 * RemoveComments
 * Deduplicate
@@ -30,32 +27,26 @@ The following transformations were applied:
 
 These transformations remove non-domain entries like IP addresses and empty lines, along with Unicode. Unicode in blocklists should be converted to Punycode for compatibility.
 
-The percentage next to the count is the entries removed from the total number of non-compiled entries (Number of domains).
-
-Note that all further processing is done on the non-compiled blocklist with IP addresses and Unicode kept.
-
-### Number of entries after compiling
-
-The number of domains after processing through the Hostlist Compiler. This number is the same as `Number of domains - Entries removed by Hostlist Compiler`.
+The percentage next to the count is the entries removed from the total compressed entries.
 
 ### Domains found in Tranco
 
-The number of domains found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found.
+The number of domains in the raw blocklist found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found.
 
 ### Percentage of dead domains
 
-The percentage of domains found dead by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
+The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
-To generate faster reports, only 60% of the blocklist is selected for the dead check. This selection is done at random using `shuf`.
-
-The percentage is calculated from the 60% of the total number of non-compiled entries (Number of domains).
+To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random.
 
 ### Unique domains not found in other blocklists
 
-The count is of domains that were not found in the specified blocklist. See the list of blocklists configured to compare from here: [blocklists_to_compare.txt](https://raw.githubusercontent.com/jarelllama/Blocklist-Checker/main/data/blocklists_to_compare.txt)
+The number of domains[^1] in the raw blocklist that were not found in the specified blocklist in column 2. See the list of blocklists configured for comparison here: [blocklists_to_compare.txt](https://raw.githubusercontent.com/jarelllama/Blocklist-Checker/main/data/blocklists_to_compare.txt)
 
-The percentage is the domains that were not found in the specified blocklist from the total number of domains (Number of domains).
+The percentage shows what percent of domains in the raw blocklist are unique.
 
 ### Processing time
 
 Time taken in seconds from downloading the blocklist to generating the report.
+
+[^1]: The raw blocklist may contain non-domain entries like IP addresses.

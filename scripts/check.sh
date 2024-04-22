@@ -18,14 +18,15 @@ main() {
     execution_time="$(date +%s)"
 
     # Download blocklist
-    curl -L "$URL" -o blocklist.tmp
-    # Remove [AdBlock Plus] header
-    sed -i '/\[.*\]/d' blocklist.tmp
-    sort blocklist.tmp -o blocklist.tmp
+    curl -L "$URL" -o raw.tmp
+    sort raw.tmp -o raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
-    title="$(mawk -F ': ' '/Title:/ {print $2}' blocklist.tmp)"
+    title="$(mawk -F ': ' '/Title:/ {print $2}' raw.tmp)"
     [[ -z "$title" ]] && title="$URL"
+
+    # Remove AdBlock Plus header and comments
+    sed -i '/[\[#!]/d' raw.tmp
 
     process_blocklist
 
@@ -33,64 +34,66 @@ main() {
 }
 
 process_blocklist() {
+    # Count number of raw uncompressed entries
+    raw_count="$(wc -l < raw.tmp)"
+
     create_hostlist_compiler_config
 
-    # Remove comments and compile to standardized domains format
-    compile -c config.json blocklist.tmp
+    # Compress and compile to standardized domains format
+    compile -c config.json compressed.tmp
 
-    # Count number of entries
-    entries_count="$(wc -l < blocklist.tmp)"
+    # Count number of compressed entries
+    compressed_count="$(wc -l < compressed.tmp)"
 
-    # Check for entries removed by Hostlist Compiler
-    compile -i blocklist.tmp compiled.tmp
-    entries_removed="$(comm -23 blocklist.tmp compiled.tmp)"
+    # Check for invalid entries removed by Hostlist Compiler (uses compressed)
+    compile -i compressed.tmp compiled.tmp
+    invalid_entries="$(comm -23 compressed.tmp compiled.tmp)"
     # Note wc -w being used here might cause lines with whitespaces to be
     # miscounted. In theory, no blocklist should have spaces anyway.
-    entries_removed_count="$(wc -w <<< "$entries_removed")"
-    entries_removed_percentage="$(( entries_removed_count * 100 / entries_count ))"
-    compiled_entries_count="$(wc -l < compiled.tmp)"
+    invalid_entries_count="$(wc -w <<< "$invalid_entries")"
+    invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
 
-    # Check for domains in Tranco
+    # Check for domains in Tranco (uses raw)
     curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
         | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
     sort tranco.tmp -o tranco.tmp
-    in_tranco="$(comm -12 blocklist.tmp tranco.tmp)"
+    in_tranco="$(comm -12 raw.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # To reduce processing time, 60% of the domains are randomly picked to be
-    # processed by the dead check.
-    sixty_percent="$(( $(wc -l < blocklist.tmp) * 60 / 100 ))"
-    shuf -n "$sixty_percent" blocklist.tmp > temp
+    # processed by the dead check. (uses compressed)
+    sixty_percent="$(( $(wc -l < compressed.tmp) * 60 / 100 ))"
+    shuf -n "$sixty_percent" compressed.tmp > sixty_percent.tmp
 
     # Format to Adblock Plus syntax for Dead Domains Linter
-    sed -i 's/.*/||&^/' temp
+    sed -i 's/.*/||&^/' sixty_percent.tmp
 
     # Check for dead domains
-    dead-domains-linter -i temp --export dead.tmp
+    dead-domains-linter -i sixty_percent.tmp --export dead.tmp
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead.tmp)"
-    # Note that the dead percentage is calculated from the 60% of the blocklist
-    # selected for the dead check.
+    # Note that the dead percentage is calculated from the 60% of compressed
+    # entries selected for the dead check.
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
-    # Find unique and duplicate domains in other blocklists
+    # Find unique and duplicate domains in other blocklists (uses raw)
     table="| Unique | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
         # Note that currently only blocklists in domains format are supported
-        # for comparing (ABP requires also converting blocklist.tmp to ABP).
-        curl -L "$url" -o external_blocklist.tmp
-        # Get entries, ignoring comments
-        mawk '!/#/' external_blocklist.tmp > temp
-        sort -u temp -o external_blocklist.tmp
+        # for comparing (ABP requires also converting raw.tmp to ABP).
+        curl -L "$url" -o blocklist.tmp
+        # Remove comments
+        sed -i '/[\[#!]/d' blocklist.tmp
+        sort -u blocklist.tmp -o blocklist.tmp
 
         # wc -l seems to work just fine here
-        unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -l)"
-        unique_percentage="$(( unique_count * 100 / entries_count ))"
+        unique_count="$(comm -23 raw.tmp blocklist.tmp | wc -l)"
+        unique_percentage="$(( unique_count * 100 / raw_count ))"
         table="${table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
@@ -110,13 +113,13 @@ replace() {
 generate_results() {
     replace TITLE "${title//\//\\/}"  # Escape slashes
     replace URL "${URL//\//\\/}"  # Escape slashes
-    replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
-    replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
-    replace ENTRIES_REMOVED "${entries_removed//$'\n'/\\n}"
-    replace COMPILED_ENTRIES_COUNT "$compiled_entries_count"
-    replace ENTRIES_COUNT "$entries_count"
+    replace RAW_COUNT "$raw_count"
+    replace COMPRESSED_COUNT "$compressed_count"
+    replace INVALID_ENTRIES_COUNT "$invalid_entries_count"
+    replace INVALID_ENTRIES_PERCENTAGE "$invalid_entries_percentage"
+    replace INVALID_ENTRIES "${invalid_entries//$'\n'/\\n}"  # Escape new line
     replace IN_TRANCO_COUNT "$in_tranco_count"
-    replace IN_TRANCO "${in_tranco//$'\n'/\\n}"
+    replace IN_TRANCO "${in_tranco//$'\n'/\\n}"  # Escape new line
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
@@ -131,7 +134,7 @@ create_hostlist_compiler_config() {
 "name": "Blocklist",
 "sources": [
     {
-    "source": "blocklist.tmp",
+    "source": "raw.tmp",
     "transformations": ["RemoveComments", "Compress"]
     }
 ]
