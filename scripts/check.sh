@@ -63,7 +63,7 @@ process_blocklist() {
     dead_percentage="$(( dead_count * 100 / entries_count ))"
 
     # Find unique and duplicate domains in other blocklists
-    printf "\| Duplicates \| Blocklist \|\n\| ---:\| --- \|\n" > duplicate_table.tmp
+    table="\| Duplicates \| Blocklist \|\n\| ---:\| --- \|\n"
     while read -r blocklist; do
         name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
@@ -78,7 +78,7 @@ process_blocklist() {
         unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / entries_count ))"
         duplicate_count="$(comm -12 blocklist.tmp external_blocklist.tmp | wc -w)"
-        printf "\| %s \| %s \|\n" "$duplicate_count" "$name" >> duplicate_table.tmp
+        table="${table}\| ${duplicate_count} \| ${name} \|\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 
@@ -106,7 +106,7 @@ generate_results() {
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace UNIQUE_COUNT "$unique_count"
     replace UNIQUE_PERCENTAGE "$unique_percentage"
-    replace DUPLICATE_TABLE "$(<duplicate_table.tmp)"
+    replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }
