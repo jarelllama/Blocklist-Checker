@@ -23,7 +23,7 @@ The number of entries in the blocklist calculated after removing comments and th
 
 The number of entries after compression via [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler).
 
-The percentage next to the count is the number of entries compressed from the total raw entries (higher percentage means higher compression).
+The percentage next to the count is the number of entries compressed from the total raw entries (a higher percentage means higher compression).
 
 Note that the compressed blocklist is used for all further processing.
 

@@ -116,6 +116,7 @@ replace() {
 generate_report() {
     # Escape new line characters, remove consecutive new line characters,
     # and escape slashes
+    # -z learnt from :https://linuxhint.com/newline_replace_sed/
     invalid_entries="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$invalid_entries")"
     in_tranco="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$in_tranco")"
 
