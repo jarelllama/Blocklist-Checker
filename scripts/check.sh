@@ -73,7 +73,7 @@ process_blocklist() {
         curl -L "$url" -o external_blocklist.tmp
         # Get entries, ignoring comments
         mawk '!/#/' external_blocklist.tmp > temp
-        mv temp external_blocklist.tmp
+        sort -u temp -o external_blocklist.tmp
 
         unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / entries_count ))"
