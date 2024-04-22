@@ -29,10 +29,10 @@ jobs:
       - name: Comment results
         run: |
           gh issue comment ${{ github.event.issue.number }} -b \
-          $(echo ${{ env.ENTRIES_BEFORE }})
+          "$(echo ${{ env.ENTRIES_BEFORE }})
           $(echo ${{ env.LINES_REMOVED }})
           $(echo ${{ env.ENTRIES_AFTER }})
           $(echo ${{ env.IN_TRANCO }})
-          $(echo ${{ env.DEAD_COUNT }})
+          $(echo ${{ env.DEAD_COUNT }})"
         env:
           GH_TOKEN: $(echo ${{ github.token }})
