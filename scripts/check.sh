@@ -63,7 +63,7 @@ process_blocklist() {
     dead_percentage="$(( dead_count * 100 / entries_count ))"
 
     # Find unique and duplicate domains in other blocklists
-    printf "| Duplicates | Blocklist |\n| ---:| --- |\n" > duplicate_table.tmp
+    printf "\| Duplicates \| Blocklist \|\n\| ---:\| --- \|\n" > duplicate_table.tmp
     while read -r blocklist; do
         name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
@@ -76,7 +76,7 @@ process_blocklist() {
         unique_count="$(comm -23 compiled.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / compiled_entries_count ))"
         duplicate_count="$(comm -12 compiled.tmp external_blocklist.tmp | wc -w)"
-        printf "| %s | %s |\n" "$duplicate_count" "$name" >> duplicate_table.tmp
+        printf "\| %s \| %s \|\n" "$duplicate_count" "$name" >> duplicate_table.tmp
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 
@@ -136,7 +136,7 @@ EOF
 compile() {
     printf "\n"
     hostlist-compiler "$1" "$2" -o temp
-    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp > "$3"
+    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort > "$3"
 }
 
 main "$1"
