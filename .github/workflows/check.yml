@@ -23,6 +23,6 @@ jobs:
 
           # Comment results
           gh issue comment ${{ github.event.issue.number }} -b \
-          $(cat data/TEMPLATE.md)
+          "$(cat data/TEMPLATE.md)""
         env:
           GH_TOKEN: ${{ github.token }}
