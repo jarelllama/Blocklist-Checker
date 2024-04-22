@@ -33,7 +33,7 @@ main() {
 
     process_blocklist
 
-    generate_results
+    generate_report
 }
 
 process_blocklist() {
@@ -110,9 +110,9 @@ replace() {
     sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
 }
 
-# Function 'generate_results' creates the markdown results to reply to the
+# Function 'generate_report' creates the markdown report to reply to the
 # issue with.
-generate_results() {
+generate_report() {
     replace TITLE "${title//\//\\/}"  # Escape slashes
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
