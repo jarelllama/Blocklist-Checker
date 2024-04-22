@@ -21,6 +21,10 @@ jobs:
         run: |
           bash scripts/check.sh ${{ github.event.issue.body }}
 
+          # Update issue title
+          title="$(mawk -F 'Results for ' '{print $2}')"
+          gh issue edit ${{ github.event.issue.number }} -t "$title"
+
           # Comment results
           gh issue close ${{ github.event.issue.number }} -c \
           "$(cat data/TEMPLATE.md)"
