@@ -19,6 +19,7 @@ main() {
 
     # Download blocklist
     curl -L "$URL" -o raw.tmp
+    # Intentionally not removing duplicate entries
     sort raw.tmp -o raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
@@ -56,7 +57,7 @@ process_blocklist() {
     # Check for domains in Tranco (uses raw)
     curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
         | gunzip - > tranco.tmp
-    sed -i 's/^.*,//' tranco.tmp
+    sed -i 's/^.*,//; s/\r//g' tranco.tmp  # Removes carriage return characters
     sort tranco.tmp -o tranco.tmp
     in_tranco="$(comm -12 raw.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
@@ -79,7 +80,7 @@ process_blocklist() {
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
     # Find unique and duplicate domains in other blocklists (uses raw)
-    table="| Unique | Blocklist |\n| ---:|:--- |\n"
+    duplicates_table="| Unique | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
@@ -94,7 +95,7 @@ process_blocklist() {
         # wc -l seems to work just fine here
         unique_count="$(comm -23 raw.tmp blocklist.tmp | wc -l)"
         unique_percentage="$(( unique_count * 100 / raw_count ))"
-        table="${table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
+        duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 
@@ -121,7 +122,7 @@ generate_results() {
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "${in_tranco//$'\n'/\\n}"  # Escape new line
     replace DEAD_PERCENTAGE "$dead_percentage"
-    replace DUPLICATE_TABLE "$table"
+    replace DUPLICATES_TABLE "$duplicates_table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }

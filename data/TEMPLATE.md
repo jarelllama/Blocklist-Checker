@@ -24,11 +24,11 @@ IN_TRANCO
 
 </details>
 
-Percentage of dead domains: (DEAD_PERCENTAGE%)
+Percentage of dead domains: DEAD_PERCENTAGE%
 
 Unique domains not found in other blocklists:
 
-DUPLICATE_TABLE
+DUPLICATES_TABLE
 
 Processing time: PROCESSING_TIME seconds
 
