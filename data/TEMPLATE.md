@@ -1,6 +1,8 @@
-# Results for *TITLE*
+# Report for *TITLE*
 
 <URL>
+
+*Report generated on GENERATION_TIME using [jarelllama/Blocklist-Checker](https://github.com/jarelllama/Blocklist-Checker).*
 
 Number of raw entries: RAW_COUNT
 
@@ -32,6 +34,4 @@ DUPLICATES_TABLE
 
 Processing time: PROCESSING_TIME seconds
 
-Report generated on GENERATION_TIME using [jarelllama/Blocklist-Checker](https://github.com/jarelllama/Blocklist-Checker).
-
-See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.
+*See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.*
