@@ -33,6 +33,6 @@ jobs:
           echo ${{ env.LINES_REMOVED }}
           echo ${{ env.ENTRIES_AFTER }}
           echo ${{ env.IN_TRANCO }}
-          echo ${{ env.DEAD_COUNT }}""
+          echo ${{ env.DEAD_COUNT }}"
         env:
           GH_TOKEN: ${{ github.token }}
