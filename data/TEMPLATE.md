@@ -16,7 +16,7 @@ Number of entries after compiling: COMPILED_ENTRIES_COUNT
 IN_TRANCO
 </details>
 
-Number of dead domains: DEAD_COUNT (DEAD_PERCENTAGE%)
+Percentage of dead domains: (DEAD_PERCENTAGE%)
 
 Unique domains not found in other blocklists:
 

@@ -112,7 +112,6 @@ generate_results() {
     replace ENTRIES_COUNT "$entries_count"
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "$in_tranco"
-    replace DEAD_COUNT "$dead_count"
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
