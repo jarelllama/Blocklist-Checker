@@ -19,6 +19,8 @@ main() {
 
     # Download blocklist
     curl -L "$URL" -o blocklist.tmp
+    # Remove [AdBlock Plus] header
+    sed -i '/\[.*\]/d' blocklist.tmp
     sort blocklist.tmp -o blocklist.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
@@ -64,7 +66,7 @@ process_blocklist() {
     dead_percentage="$(( dead_count * 100 / entries_count ))"
 
     # Find unique and duplicate domains in other blocklists
-    table="| Duplicates | Blocklist |\n| ---:|:--- |\n"
+    table="| Unique | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
@@ -78,8 +80,7 @@ process_blocklist() {
 
         unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / entries_count ))"
-        duplicate_count="$(comm -12 blocklist.tmp external_blocklist.tmp | wc -w)"
-        table="${table}| ${duplicate_count} | ${name} |\n"
+        table="${table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 
@@ -105,8 +106,6 @@ generate_results() {
     replace IN_TRANCO "$in_tranco"
     replace DEAD_COUNT "$dead_count"
     replace DEAD_PERCENTAGE "$dead_percentage"
-    replace UNIQUE_COUNT "$unique_count"
-    replace UNIQUE_PERCENTAGE "$unique_percentage"
     replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
