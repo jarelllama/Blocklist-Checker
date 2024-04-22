@@ -19,14 +19,18 @@ jobs:
 
       - name: Check blocklist
         run: |
+          trap 'gh issue comment ${{ github.event.issue.number }} -b \
+          "An error occured while checking the blocklist."' EXIT
+
           # Get URl of blocklist
           url="$(grep 'http' <<< "${{ github.event.issue.body }}")"
 
           bash scripts/check.sh "$url"
 
-          # Update issue title
+          # Update issue title and label
           title="$(mawk -F '*' '{print $2}' data/TEMPLATE.md)"
-          gh issue edit ${{ github.event.issue.number }} -t "$title"
+          gh issue edit ${{ github.event.issue.number }} -t "$title" \
+            --add-label 'report generated'
 
           # Comment results
           gh issue comment ${{ github.event.issue.number }} -b \
