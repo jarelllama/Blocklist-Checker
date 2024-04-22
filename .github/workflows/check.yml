@@ -35,4 +35,4 @@ jobs:
           $(echo ${{ env.IN_TRANCO }})
           $(echo ${{ env.DEAD_COUNT }})"
         env:
-          GH_TOKEN: $(echo ${{ github.token }})
+          GH_TOKEN: ${{ github.token }}
