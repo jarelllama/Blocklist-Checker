@@ -19,6 +19,7 @@ main() {
 
     # Download blocklist
     curl -L "$URL" -o blocklist.tmp
+    sort blocklist.tmp -o blocklist.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
     title="$(mawk -F ': ' '/Title:/ {print $2}' blocklist.tmp)"
@@ -49,6 +50,7 @@ process_blocklist() {
     curl -L --retry 2 --retry-all-errors \
         'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
+    sort tranco.tmp -o tranco.tmp
     in_tranco="$(comm -12 blocklist.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
