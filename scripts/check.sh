@@ -65,7 +65,7 @@ process_blocklist() {
     dead_percentage="$(( dead_count * 100 / entries_count ))"
 
     # Find unique and duplicate domains in other blocklists
-    table="\| Duplicates \| Blocklist \|\n\| ---:\|:--- \|\n"
+    table="| Duplicates | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
@@ -80,7 +80,7 @@ process_blocklist() {
         unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / entries_count ))"
         duplicate_count="$(comm -12 blocklist.tmp external_blocklist.tmp | wc -w)"
-        table="${table}\| ${duplicate_count} \| ${name} \|\n"
+        table="${table}| ${duplicate_count} | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 

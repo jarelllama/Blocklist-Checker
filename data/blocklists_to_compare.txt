@@ -1,2 +1,2 @@
-NAME: Hagezi's TIF Full URL: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif-onlydomains.txt
-NAME: Hagezi's Multi ULTIMATE URL: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt
+Hagezi's TIF Full URL,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif-onlydomains.txt
+Hagezi's Multi ULTIMATE URL,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt
