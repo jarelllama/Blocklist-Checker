@@ -46,7 +46,7 @@ process_blocklist() {
     # Count number of compressed entries
     compressed_count="$(wc -l < compressed.tmp)"
 
-    # Check for invalid entries removed by Hostlist Compiler (uses compressed)
+    # Check for invalid entries removed by Hostlist Compiler
     compile -i compressed.tmp compiled.tmp
     invalid_entries="$(comm -23 compressed.tmp compiled.tmp)"
     # Note wc -w being used here might cause lines with whitespaces to be
@@ -54,16 +54,16 @@ process_blocklist() {
     invalid_entries_count="$(wc -w <<< "$invalid_entries")"
     invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
 
-    # Check for domains in Tranco (uses raw)
+    # Check for domains in Tranco
     curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
         | gunzip - > tranco.tmp
     sed -i 's/^.*,//; s/\r//g' tranco.tmp  # Removes carriage return characters
     sort tranco.tmp -o tranco.tmp
-    in_tranco="$(comm -12 raw.tmp tranco.tmp)"
+    in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # To reduce processing time, 60% of the domains are randomly picked to be
-    # processed by the dead check. (uses compressed)
+    # processed by the dead check.
     sixty_percent="$(( $(wc -l < compressed.tmp) * 60 / 100 ))"
     shuf -n "$sixty_percent" compressed.tmp > sixty_percent.tmp
 
@@ -75,26 +75,25 @@ process_blocklist() {
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead.tmp)"
-    # Note that the dead percentage is calculated from the 60% of compressed
-    # entries selected for the dead check.
+    # Note the dead percentage is calculated from the 60%
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
-    # Find unique and duplicate domains in other blocklists (uses raw)
+    # Find unique and duplicate domains in other blocklists
     duplicates_table="| Unique | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
         # Note that currently only blocklists in domains format are supported
-        # for comparing (ABP requires also converting raw.tmp to ABP).
+        # for comparing (ABP requires also converting compressed.tmp to ABP).
         curl -L "$url" -o blocklist.tmp
         # Remove comments
         sed -i '/[\[#!]/d' blocklist.tmp
         sort -u blocklist.tmp -o blocklist.tmp
 
         # wc -l seems to work just fine here
-        unique_count="$(comm -23 raw.tmp blocklist.tmp | wc -l)"
-        unique_percentage="$(( unique_count * 100 / raw_count ))"
+        unique_count="$(comm -23 compressed.tmp blocklist.tmp | wc -l)"
+        unique_percentage="$(( unique_count * 100 / compressed_count ))"
         duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
