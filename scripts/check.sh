@@ -88,11 +88,9 @@ process_blocklist() {
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
-        # Note that currently only blocklists in domains format are supported
-        # for comparing (ABP requires also converting compressed.tmp to ABP).
         curl -L "$url" -o blocklist.tmp
-        # Remove comments
-        sed -i '/[\[#!]/d' blocklist.tmp
+        # Remove comments and convert ABP format to domains
+        sed -i '/[\[#!]/d; s/[|\^]//g' blocklist.tmp
         sort -u blocklist.tmp -o blocklist.tmp
 
         # wc -l seems to work just fine here
