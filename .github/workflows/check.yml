@@ -19,7 +19,7 @@ jobs:
 
       - name: Check blocklist from issue
         run: |
-          bash scripts/check.sh '$(echo ${{ github.event.issue.body }})'
+          bash scripts/check.sh ${{ github.event.issue.body }}
           echo "$ENTRIES_BEFORE" >> $GITHUB_ENV
           echo "$LINES_REMOVED" >> $GITHUB_ENV
           echo "$ENTRIES_AFTER" >> $GITHUB_ENV
