@@ -1,4 +1,4 @@
-name: Check blocklist
+name: Check a blocklist
 description: Get a report on a blocklist.
 title: Check blocklist
 labels: ["check blocklist"]
