@@ -9,7 +9,7 @@ Generate a simple report for DNS blocklists or see previous reports of requested
 1. Open a new issue: [Check a blocklist](https://github.com/jarelllama/Blocklist-Checker/issues/new/choose)
 2. Enter the URL to the raw file of the blocklist
 3. Wait a few minutes for the report to generate
-4. The GitHub Actions bot will reply with the report.
+4. The GitHub Actions bot will reply with the report
 
 See what is included in the report below.
 
