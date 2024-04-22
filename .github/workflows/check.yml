@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   check-blocklist:
-    if: $(echo ${{ github.event.label.name == 'check blocklist' }})
+    if: ${{ github.event.label.name == 'check blocklist' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,10 +29,10 @@ jobs:
       - name: Comment results
         run: |
           gh issue comment ${{ github.event.issue.number }} -b \
-          "$(echo ${{ env.ENTRIES_BEFORE }})
-          $(echo ${{ env.LINES_REMOVED }})
-          $(echo ${{ env.ENTRIES_AFTER }})
-          $(echo ${{ env.IN_TRANCO }})
-          $(echo ${{ env.DEAD_COUNT }})"
+          "$(echo ENTRIES_BEFORE)
+          $(echo LINES_REMOVED)
+          $(echo ENTRIES_AFTER)
+          $(echo IN_TRANCO)
+          $(echo DEAD_COUNT)"
         env:
           GH_TOKEN: ${{ github.token }}
