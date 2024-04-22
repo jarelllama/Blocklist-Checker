@@ -6,7 +6,9 @@
 
 Number of raw entries: RAW_COUNT
 
-Number of compressed entries: COMPRESSED_COUNT
+Number of compressed entries: COMPRESSED_COUNT (COMPRESSED_COUNT_PERCENTAGE%)
+
+Percentage of dead domains: DEAD_PERCENTAGE%
 
 <details>
 <summary>Invalid entries: INVALID_ENTRIES_COUNT (INVALID_ENTRIES_PERCENTAGE%)</summary>
@@ -25,8 +27,6 @@ IN_TRANCO
 ```
 
 </details>
-
-Percentage of dead domains: DEAD_PERCENTAGE%
 
 Unique domains not found in other blocklists:
 

@@ -47,6 +47,7 @@ process_blocklist() {
 
     # Count number of compressed entries
     compressed_count="$(wc -l < compressed.tmp)"
+    compressed_count_percentage="$(( compressed_count * 100 / raw_count ))"
 
     # Check for invalid entries removed by Hostlist Compiler
     compile -i compressed.tmp compiled.tmp
@@ -116,13 +117,14 @@ generate_report() {
     replace TITLE "${title//\//\\/}"  # Escape slashes
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
+    replace COMPRESSED_COUNT_PERCENTAGE "$compressed_count_percentage"
     replace COMPRESSED_COUNT "$compressed_count"
+    replace DEAD_PERCENTAGE "$dead_percentage"
     replace INVALID_ENTRIES_COUNT "$invalid_entries_count"
     replace INVALID_ENTRIES_PERCENTAGE "$invalid_entries_percentage"
     replace INVALID_ENTRIES "${invalid_entries//$'\n'/\\n}"  # Escape new line
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "${in_tranco//$'\n'/\\n}"  # Escape new line
-    replace DEAD_PERCENTAGE "$dead_percentage"
     replace DUPLICATES_TABLE "$duplicates_table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
