@@ -1,8 +1,8 @@
 # Jarelllama's Blocklist Check
 
-Generate a simple report for DNS blocklists.
+Generate a simple report for DNS blocklists or see previous reports of requested blocklists.
 
-**See all previously checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22check+blocklist%22+label%3A%22report+generated%22+).**
+**See all checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22check+blocklist%22+label%3A%22report+generated%22+).**
 
 ## How to
 
