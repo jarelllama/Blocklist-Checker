@@ -20,19 +20,19 @@ jobs:
       - name: Check blocklist from issue
         run: |
           bash scripts/check.sh '${{ github.event.issue.body }}'
-          echo "$ENTRIES_BEFORE" >> "$GITHUB_ENV"
-          echo "$LINES_REMOVED" >> "$GITHUB_ENV"
-          echo "$ENTRIES_AFTER" >> "$GITHUB_ENV"
-          echo "$IN_TRANCO=" >> "$GITHUB_ENV"
-          echo "$DEAD_COUNT" >> "$GITHUB_ENV"
+          echo "$ENTRIES_BEFORE" >> $GITHUB_ENV
+          echo "$LINES_REMOVED" >> $GITHUB_ENV
+          echo "$ENTRIES_AFTER" >> $GITHUB_ENV
+          echo "$IN_TRANCO=" >> $GITHUB_ENV
+          echo "$DEAD_COUNT" >> $GITHUB_ENV
 
       - name: Comment results
         run: |
           gh issue comment ${{ github.event.issue.number }} -b \
-          ${{ env.ENTRIES_BEFORE }}
-          ${{ env.LINES_REMOVED }}
-          ${{ env.ENTRIES_AFTER }}
-          ${{ env.IN_TRANCO }}
-          ${{ env.DEAD_COUNT }}
+          echo ${{ env.ENTRIES_BEFORE }}
+          echo ${{ env.LINES_REMOVED }}
+          echo ${{ env.ENTRIES_AFTER }}
+          echo ${{ env.IN_TRANCO }}
+          echo ${{ env.DEAD_COUNT }}
         env:
           GH_TOKEN: ${{ github.token }}
