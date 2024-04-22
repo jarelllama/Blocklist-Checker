@@ -101,6 +101,7 @@ process_blocklist() {
 #   $1: keyword to replace
 #   $2: replacement
 replace() {
+    printf "%s\n" "$2"  # Print replacements for debugging
     sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
 }
 
