@@ -57,7 +57,6 @@ process_blocklist() {
     # Format to Adblock Plus syntax for Dead Domains Linter
     sed 's/.*/||&^/' blocklist.tmp > temp
     # Check for dead domains
-    printf "\n"
     dead-domains-linter -i temp --export dead.tmp
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
@@ -96,7 +95,7 @@ replace() {
 # issue with.
 generate_results() {
     replace TITLE "$title"
-    replace URL "$URL"
+    replace URL "${URL//\//\\/}"  # Escape slashes
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
     replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
     replace ENTRIES_REMOVED "$entries_removed"
@@ -108,7 +107,7 @@ generate_results() {
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace UNIQUE_COUNT "$unique_count"
     replace UNIQUE_PERCENTAGE "$unique_percentage"
-    #replace DUPLICATE_TABLE "$table"
+    replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }
@@ -138,7 +137,6 @@ EOF
 # Output:
 #   file passed in $3
 compile() {
-    printf "\n"
     hostlist-compiler "$1" "$2" -o temp
     mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort > "$3"
 }
