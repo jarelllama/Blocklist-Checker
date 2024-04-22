@@ -48,13 +48,13 @@ The number of domains found dead by [AdGuard's Dead Domains Linter](https://gith
 
 To generate faster reports, only 60% of the blocklist is selected for the dead check. This selection is done at random using `shuf`.
 
-The percentage next to the count is the dead domains removed from the total number of domains (Number of domains).
+The percentage next to the count is the dead domains removed from 60% of the total number of non-compiled entries (Number of domains).
 
 ### Unique domains not found in other blocklists
 
 The count is of domains that were not found in the specified blocklist. See the list of blocklists configured to compare from here: [blocklists_to_compare.txt](https://raw.githubusercontent.com/jarelllama/Blocklist-Checker/main/data/blocklists_to_compare.txt)
 
-The percentage is of domains that were not found in the specified blocklist from the total number of domains (Number of domains).
+The percentage is the domains that were not found in the specified blocklist from the total number of domains (Number of domains).
 
 ### Processing time
 

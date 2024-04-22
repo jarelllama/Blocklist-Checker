@@ -41,16 +41,18 @@ process_blocklist() {
     # Count number of entries
     entries_count="$(wc -l < blocklist.tmp)"
 
-    # Checked for entries removed by Hostlist Compiler
+    # Check for entries removed by Hostlist Compiler
     compile -i blocklist.tmp compiled.tmp
     entries_removed="$(comm -23 blocklist.tmp compiled.tmp)"
+    # Note wc -w being used here might cause lines with whitespaces to be
+    # miscounted. In theory, no blocklist should have spaces anyway.
     entries_removed_count="$(wc -w <<< "$entries_removed")"
     entries_removed_percentage="$(( entries_removed_count * 100 / entries_count ))"
     compiled_entries_count="$(wc -l < compiled.tmp)"
 
     # Check for domains in Tranco
-    curl -L --retry 2 --retry-all-errors \
-        'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
+    curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
+        | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
     sort tranco.tmp -o tranco.tmp
     in_tranco="$(comm -12 blocklist.tmp tranco.tmp)"
@@ -69,8 +71,8 @@ process_blocklist() {
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead.tmp)"
-    # Note that the dead percentage is calculated off the 60% percent random
-    # domains selected for the dead check.
+    # Note that the dead percentage is calculated from the 60% of the blocklist
+    # selected for the dead check.
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
     # Find unique and duplicate domains in other blocklists
@@ -86,13 +88,15 @@ process_blocklist() {
         mawk '!/#/' external_blocklist.tmp > temp
         sort -u temp -o external_blocklist.tmp
 
-        unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -w)"
+        # wc -l seems to work just fine here
+        unique_count="$(comm -23 blocklist.tmp external_blocklist.tmp | wc -l)"
         unique_percentage="$(( unique_count * 100 / entries_count ))"
         table="${table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 }
 
-# Function 'replace' updates the markdown template with values from the results.
+# Function 'replace' updates the markdown template with values from the
+# results. Note that only the first occurrence in the file is replaced.
 # Input:
 #   $1: keyword to replace
 #   $2: replacement
@@ -144,7 +148,7 @@ EOF
 #   file passed in $3
 compile() {
     hostlist-compiler "$1" "$2" -o temp
-    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort > "$3"
+    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort -o "$3"
 }
 
 main "$1"
