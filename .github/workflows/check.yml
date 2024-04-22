@@ -19,4 +19,4 @@ jobs:
 
       - name: Check blocklist from issue
         run: |
-          bash check.sh '${{ github.event.issue.body }}'
+          bash scripts/check.sh '${{ github.event.issue.body }}'
