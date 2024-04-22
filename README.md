@@ -42,13 +42,13 @@ The number of domains after processing through the Hostlist Compiler. This numbe
 
 The number of domains found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found.
 
-### Number of dead domains
+### Percentage of dead domains
 
-The number of domains found dead by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
+The percentage of domains found dead by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
 To generate faster reports, only 60% of the blocklist is selected for the dead check. This selection is done at random using `shuf`.
 
-The percentage next to the count is the dead domains removed from 60% of the total number of non-compiled entries (Number of domains).
+The percentage is calculated from the 60% of the total number of non-compiled entries (Number of domains).
 
 ### Unique domains not found in other blocklists
 
