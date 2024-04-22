@@ -47,7 +47,7 @@ process_blocklist() {
 
     # Count number of compressed entries
     compressed_count="$(wc -l < compressed.tmp)"
-    compression_percentage="$(( $( raw_count - compressed_count ) * 100 / raw_count ))"
+    compression_percentage="$(( $(( raw_count - compressed_count )) * 100 / raw_count ))"
 
     # Check for invalid entries removed by Hostlist Compiler
     compile -i compressed.tmp compiled.tmp
