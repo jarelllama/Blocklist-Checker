@@ -1,4 +1,4 @@
-# Jarelllama's Blocklist Check
+# Jarelllama's Blocklist Checker
 
 Generate a simple report for DNS blocklists or see previous reports of requested blocklists.
 
