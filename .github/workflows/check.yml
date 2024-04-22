@@ -19,8 +19,10 @@ jobs:
 
       - name: Check blocklist
         run: |
+          # Get URl of blocklist
           url="$(grep 'http' <<< "${{ github.event.issue.body }}")"
-          bash scripts/check.sh
+
+          bash scripts/check.sh "url"
 
           # Update issue title
           title="$(mawk -F '*' '{print $2}' data/TEMPLATE.md)"
