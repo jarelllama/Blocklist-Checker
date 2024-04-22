@@ -1,0 +1,22 @@
+name: Check blocklist
+on:
+  issues:
+    types:
+      - labeled
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check-blocklist:
+    if: ${{ github.event.label.name == 'check blocklist }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Check blocklist from issue
+        run: |
+          bash check.sh '${{ github.event.issue.body }}''
