@@ -77,7 +77,7 @@ process_blocklist() {
 #   $1: keyword to replace
 #   $2: replacement
 replace() {
-    sed -i "s/${1}/${2}/" "$TEMPLATE"
+    sed -i "0,/${1}/s//${1}/${2}/" "$TEMPLATE"
 }
 
 # Function 'generate_results' creates the markdown results to reply to the
@@ -88,7 +88,7 @@ generate_results() {
     replace ENTRIES_COUNT "$entries_count"
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
     replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
-    replace ENTIRES_REMOVED "$entries_removed"
+    replace ENTRIES_REMOVED "$entries_removed"
     replace COMPILED_ENTRIES_COUNT "$compiled_entries_count"
     replace IN_TRANCO "$in_tranco"
     replace IN_TRANCO_COUNT "$in_tranco_count"
