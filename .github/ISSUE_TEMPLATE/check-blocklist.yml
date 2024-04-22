@@ -1,12 +1,12 @@
 name: Check a blocklist
-description: Get a report on a blocklist.
+description: Generate a new report for a blocklist.
 title: Check blocklist
 labels: ["check blocklist"]
 body:
   - type: input
     attributes:
-      label: Enter the URL of the blocklist's raw file
-      description: Please allow a few minutes for the report to generate.
+      label: "Report for:"
+      description: Please enter the URL to the raw file of the blocklist.
       placeholder: https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/wildcard_domains/scams.txt
     validations:
       required: true
