@@ -21,8 +21,9 @@ main() {
 
     # Download blocklist and exit if errored
     curl -L "$URL" -o raw.tmp || exit 1
-    # Remove carriage return characters
-    sed -i 's/\r//g' raw.tmp
+    # Remove carriage return characters, empty lines, and trailing
+    # whitespaces
+    sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
     # Intentionally not removing duplicate entries
     sort raw.tmp -o raw.tmp
 
@@ -92,8 +93,8 @@ process_blocklist() {
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
         curl -L "$url" -o blocklist.tmp
-        # Remove CRG, comments, and convert ABP format to domains
-        sed -i 's/\r//g: /[\[#!]/d; s/[|\^]//g' blocklist.tmp
+        # Remove carriage return characters and convert ABP format to domains
+        sed -i 's/\r//g; s/[|\^]//g' blocklist.tmp
         sort -u blocklist.tmp -o blocklist.tmp
 
         # wc -l seems to work just fine here
@@ -116,12 +117,11 @@ replace() {
 # Function 'generate_report' creates the markdown report to reply to the
 # issue with.
 generate_report() {
-    # Escape new line characters, remove consecutive new line characters,
-    # and escape slashes
+    # Escape new line characters and slashes
     # -z learnt from :https://linuxhint.com/newline_replace_sed/
-    invalid_entries="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$invalid_entries")"
-    in_tranco="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$in_tranco")"
-    # Escape slashes and &
+    invalid_entries="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$invalid_entries")"
+    in_tranco="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$in_tranco")"
+    # Escape slashes and '&'
     title="$(sed 's/[/&]/\\&/g' <<< "$title")"
 
     replace TITLE "$title"
