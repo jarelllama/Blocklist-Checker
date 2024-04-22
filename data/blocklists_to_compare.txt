@@ -1,2 +1,2 @@
-Hagezi's TIF Full:https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/tif.txt
-Hagezi's Multi ULTIMATE:https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/ultimate.txt
+NAME: Hagezi's TIF Full URL: https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/tif.txt
+NAME: Hagezi's Multi ULTIMATE URL:https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/domains/ultimate.txt

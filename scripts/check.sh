@@ -64,10 +64,9 @@ process_blocklist() {
 
     # Find unique and duplicate domains in other blocklists
     printf "| Duplicates | Blocklist |\n| ---:| --- |\n" > duplicate_table.tmp
-
     while read -r blocklist; do
-        name="$(mawk -F ":" '{print $1}' <<< "$blocklist")"
-        url="$(mawk -F ":" '{print $2}' <<< "$blocklist")"
+        name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
+        url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
 
         curl -sSL "$url" -o external_blocklist.tmp
         compile -i external_blocklist.tmp -o external_blocklist.tmp
@@ -90,8 +89,6 @@ replace() {
 # Function 'generate_results' creates the markdown results to reply to the
 # issue with.
 generate_results() {
-    end_time="$(date +%s)"
-
     replace TITLE "$title"
     replace URL "$URL"
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
@@ -106,7 +103,7 @@ generate_results() {
     replace UNIQUE_COUNT "$unique_count"
     replace UNIQUE_PERCENTAGE "$unique_percentage"
     replace DUPLICATE_TABLE "$(<duplicate_table.tmp)"
-    replace PROCESSING_TIME "$(( end_time - execution_time ))"
+    replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }
 
