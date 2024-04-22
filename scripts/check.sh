@@ -36,8 +36,7 @@ process() {
     entries_after="$(wc -l < compiled.tmp)"
 
     # Check for domains in Tranco
-    curl -sSL 'https://tranco-list.eu/top-1m.csv.zip' | gunzip - \
-        > tranco.tmp
+    curl -sSL 'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
     in_tranco="$(grep -xFf blocklist.tmp tranco.tmp)"
 
