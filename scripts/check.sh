@@ -68,7 +68,7 @@ process_blocklist() {
         name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
 
-        curl -sSL "$url" -o external_blocklist.tmp
+        curl -L "$url" -o external_blocklist.tmp
         compile -i external_blocklist.tmp -o external_blocklist.tmp
 
         unique_count="$(comm -23 compiled.tmp external_blocklist.tmp | wc -w)"

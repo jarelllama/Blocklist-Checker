@@ -26,4 +26,4 @@ DUPLICATE_TABLE
 
 Processing time: PROCESSING_TIME seconds
 
-Report generated at GENERATION_TIME
+Report generated on GENERATION_TIME
