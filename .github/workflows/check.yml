@@ -23,7 +23,7 @@ jobs:
           echo "$ENTRIES_BEFORE" >> $GITHUB_ENV
           echo "$LINES_REMOVED" >> $GITHUB_ENV
           echo "$ENTRIES_AFTER" >> $GITHUB_ENV
-          echo "$IN_TRANCO=" >> $GITHUB_ENV
+          echo "$IN_TRANCO" >> $GITHUB_ENV
           echo "$DEAD_COUNT" >> $GITHUB_ENV
 
       - name: Comment results
