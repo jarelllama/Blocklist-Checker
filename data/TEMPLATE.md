@@ -32,4 +32,6 @@ DUPLICATES_TABLE
 
 Processing time: PROCESSING_TIME seconds
 
-Report generated on GENERATION_TIME
+Report generated on GENERATION_TIME using [jarelllama/Blocklist-Checker](https://github.com/jarelllama/Blocklist-Checker).
+
+See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.
