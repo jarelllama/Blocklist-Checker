@@ -20,7 +20,7 @@ jobs:
       - name: Check blocklist from issue
         run: |
           # https://stackoverflow.com/questions/8153923/how-do-i-define-a-shell-script-variable-to-have-scope-outside-of-the-script
-          source scripts/check.sh ${{ github.event.issue.body }}
+          . scripts/check.sh ${{ github.event.issue.body }}
 
           # https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
           echo "ENTRIES_BEFORE=$ENTRIES_BEFORE" >> $GITHUB_ENV
