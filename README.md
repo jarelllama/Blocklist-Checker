@@ -1,6 +1,17 @@
 # Jarelllama's Blocklist Check
 
-Description is WIP
+Generate a simple report for DNS blocklists.
+
+**See all previously checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22check+blocklist%22+label%3A%22report+generated%22+).**
+
+## How to
+
+1. Open a new issue: [Check a blocklist](https://github.com/jarelllama/Blocklist-Checker/issues/new/choose)
+2. Enter the URL to the raw file of the blocklist
+3. Wait a few minutes for the report to generate
+4. The GitHub Actions bot will reply with the report.
+
+See what is included in the report below.
 
 ## Report
 
