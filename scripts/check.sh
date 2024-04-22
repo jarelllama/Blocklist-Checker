@@ -40,7 +40,7 @@ process_blocklist() {
 
     # Checked for entries removed by Hostlist Compiler
     compile -i blocklist.tmp compiled.tmp
-    entries_removed="$(grep -vxFf compiled.tmp blocklist.tmp)"
+    entries_removed="$(comm -23 blocklist.tmp compiled.tmp)"
     entries_removed_count="$(wc -w <<< "$entries_removed")"
     entries_removed_percentage="$(( entries_removed_count * 100 / entries_count ))"
     compiled_entries_count="$(wc -l < compiled.tmp)"
@@ -49,7 +49,7 @@ process_blocklist() {
     curl -L --retry 2 --retry-all-errors \
         'https://tranco-list.eu/top-1m.csv.zip' | gunzip - > tranco.tmp
     sed -i 's/^.*,//' tranco.tmp
-    in_tranco="$(grep -xFf blocklist.tmp tranco.tmp)"
+    in_tranco="$(comm -12 blocklist.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # Format to Adblock Plus syntax for Dead Domains Linter
@@ -128,7 +128,7 @@ EOF
 }
 
 # Function 'compile' compiles the blocklist using AdGuard's Hostlist Compiler
-# and outputs the compiled blocklist without comments.
+# and outputs the compiled blocklist in domains format without comments.
 # Input:
 #   $1: argument to pass to Hostlist Compiler
 #   $2: argument to pass to Hostlist Compiler
