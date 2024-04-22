@@ -21,6 +21,8 @@ main() {
 
     # Download blocklist and exit if errored
     curl -L "$URL" -o raw.tmp || exit 1
+    # Remove carriage return characters
+    sed -i 's/\r//g' raw.tmp
     # Intentionally not removing duplicate entries
     sort raw.tmp -o raw.tmp
 
@@ -29,7 +31,7 @@ main() {
     title="$(mawk -F ': ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
     [[ -z "$title" ]] && title="$URL"
 
-    # Remove AdBlock Plus header and comments
+    # Remove Adblock Plus header and comments
     sed -i '/[\[#!]/d' raw.tmp
 
     process_blocklist
@@ -44,6 +46,7 @@ process_blocklist() {
     create_hostlist_compiler_config
 
     # Compress and compile to standardized domains format
+    # Also removes content modifiers
     compile -c config.json compressed.tmp
 
     # Count number of compressed entries
@@ -61,7 +64,7 @@ process_blocklist() {
     # Check for domains in Tranco
     curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
         | gunzip - > tranco.tmp
-    sed -i 's/^.*,//; s/\r//g' tranco.tmp  # Removes carriage return characters
+    sed -i 's/^.*,//; s/\r//g' tranco.tmp
     sort tranco.tmp -o tranco.tmp
     in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
@@ -89,8 +92,8 @@ process_blocklist() {
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
         curl -L "$url" -o blocklist.tmp
-        # Remove comments and convert ABP format to domains
-        sed -i '/[\[#!]/d; s/[|\^]//g' blocklist.tmp
+        # Remove CRG, comments, and convert ABP format to domains
+        sed -i 's/\r//g: /[\[#!]/d; s/[|\^]//g' blocklist.tmp
         sort -u blocklist.tmp -o blocklist.tmp
 
         # wc -l seems to work just fine here
