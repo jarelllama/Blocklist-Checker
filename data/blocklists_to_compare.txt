@@ -7,5 +7,4 @@ Jarelllama's Scam Blocklist,https://raw.githubusercontent.com/jarelllama/Scam-Bl
 Jarelllama's Scam Blocklist LIGHT VERSION,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/wildcard_domains/scams_light.txt
 oisd big,https://big.oisd.nl/domainswild2
 AdGuard's DNS filter,https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt
-StevenBlack's unified hosts,https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 Fabriziosalmi's Hourly Updated Blocklist,https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt
