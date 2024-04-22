@@ -17,12 +17,12 @@ jobs:
         with:
           ref: main
 
-      - name: Check blocklist from issue
+      - name: Check blocklist
         run: |
           bash scripts/check.sh ${{ github.event.issue.body }}
 
           # Comment results
-          gh issue comment ${{ github.event.issue.number }} -b \
+          gh issue close ${{ github.event.issue.number }} -c \
           "$(cat data/TEMPLATE.md)"
         env:
           GH_TOKEN: ${{ github.token }}
