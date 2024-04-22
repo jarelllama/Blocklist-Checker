@@ -6,7 +6,7 @@
 
 Number of raw entries: RAW_COUNT
 
-Number of compressed entries: COMPRESSED_COUNT (COMPRESSED_COUNT_PERCENTAGE%)
+Number of compressed entries: COMPRESSED_COUNT (COMPRESSION_PERCENTAGE%)
 
 Percentage of dead domains: DEAD_PERCENTAGE%
 
