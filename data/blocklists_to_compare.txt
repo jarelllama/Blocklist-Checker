@@ -8,3 +8,4 @@ Jarelllama's Scam Blocklist LIGHT VERSION,https://raw.githubusercontent.com/jare
 oisd big,https://big.oisd.nl/domainswild2
 AdGuard's base filter,https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_Base/filter.txt
 StevenBlack's unified hosts,https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+Fabriziosalmi's Hourly Updated Blocklist,https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt
