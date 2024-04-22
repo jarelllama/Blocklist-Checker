@@ -114,10 +114,10 @@ replace() {
 # Function 'generate_report' creates the markdown report to reply to the
 # issue with.
 generate_report() {
-    invalid_entries="${invalid_entries//\//\\/}"  # Escape slashes
-    invalid_entries="${invalid_entries//$'\n'/\\n}"  # Escape new line character
-    in_tranco="${in_tranco//\//\\/}"  # Escape slashes
-    in_tranco="${in_tranco//$'\n'/\\n}"  # Escape new line character
+    # Escape new line characters, remove consecutive new line characters,
+    # and escape slashes
+    invalid_entries="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$invalid_entries")"
+    in_tranco="$(sed -z 's/\n/\\n/g; s/\\n\\n//g; s/\//\\\//g' <<< "$in_tranco")"
 
     replace TITLE "${title//\//\\/}"  # Escape slashes
     replace URL "${URL//\//\\/}"  # Escape slashes
