@@ -26,7 +26,7 @@ jobs:
           gh issue edit ${{ github.event.issue.number }} -t "$title"
 
           # Comment results
-          gh issue close ${{ github.event.issue.number }} -c \
+          gh issue comment ${{ github.event.issue.number }} -b \
           "$(cat data/TEMPLATE.md)"
         env:
           GH_TOKEN: ${{ github.token }}
