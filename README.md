@@ -6,7 +6,7 @@ Description is WIP
 
 ### Number of domains
 
-The number of domains in the blocklist calculated after processing through [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler) to standardize the format of the blocklist and to remove comments.
+The number of entries in the blocklist calculated after processing through [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler) to standardize the format of the blocklist and to remove comments. This includes non-domain entries like IP addresses.
 
 The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?tab=readme-ov-file#-transformations) were applied:
 
@@ -17,7 +17,7 @@ The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?
 
 ### Entries removed by Hostlist Compiler
 
-The number of entries (not just domains) removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
+The number of entries removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
 
 The following transformations were applied:
 
@@ -46,7 +46,7 @@ The number of domains found in the [Tranco Top Sites Ranking](https://tranco-lis
 
 The number of domains found dead by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
-To reduce the amount of time each report takes, only 60% of the blocklist is selected for the dead check. This selection is done at random using `shuf`.
+To generate faster reports, only 60% of the blocklist is selected for the dead check. This selection is done at random using `shuf`.
 
 The percentage next to the count is the dead domains removed from the total number of domains (Number of domains).
 
