@@ -67,8 +67,8 @@ process_blocklist() {
     # Find unique and duplicate domains in other blocklists
     table="\| Duplicates \| Blocklist \|\n\| ---:\| --- \|\n"
     while read -r blocklist; do
-        name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
-        url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
+        name="$(mawk -F ": " '{print $2}' <<< "$blocklist")"
+        url="$(mawk -F ": " '{print $3}' <<< "$blocklist")"
 
         # Note that currently only blocklists in domains format are supported
         # for comparing (ABP requires also converting blocklist.tmp to ABP).
