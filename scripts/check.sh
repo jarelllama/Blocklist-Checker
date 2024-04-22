@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Generates a markdown report for the given blocklist.
+
 readonly TEMPLATE='data/TEMPLATE.md'
 readonly BLOCKLISTS_TO_COMPARE='data/blocklists_to_compare.txt'
 readonly URL="$1"
