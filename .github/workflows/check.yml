@@ -34,7 +34,7 @@ jobs:
           bash scripts/check.sh "$url"
 
           # Update issue title and label
-          title="$(mawk -F '*' '{print $2}' data/TEMPLATE.md)"
+          title="$(mawk -F '*' '/Report for/ {print $2}' data/TEMPLATE.md)"
           gh issue edit ${{ github.event.issue.number }} -t "$title" \
             --remove-label 'checking' --add-label 'report generated'
 
