@@ -37,12 +37,13 @@ process() {
 
     # Check for domains in Tranco
     curl -sSL 'https://tranco-list.eu/top-1m.csv.zip' | gunzip - \
-        > toplist.tmp
-    sed -i 's/^.*,//' toplist.tmp
+        > tranco.tmp
+    sed -i 's/^.*,//' tranco.tmp
     in_tranco="$(grep -xFf blocklist.tmp tranco.tmp)"
 
     # Check for dead domains
     sed 's/.*/||&^/' blocklist.tmp > temp
+    printf "\n"
     dead-domains-linter -i temp --export dead.tmp
     # wc -l shows 0 dead when there 1 dead domain. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
@@ -64,18 +65,28 @@ process() {
 print_stats() {
     printf "\n* Number of raw entries: %s\n\n" "$entries_before"
 
-    printf "* Lines removed by Hostlist Compiler (%s):\n---\n%s\n---\n" \
+    printf "* Lines removed by Hostlist Compiler (%s):\n---\n%s\n---\n\n" \
         "$(wc -w <<< "$lines_removed")" "$lines_removed"
-    printf "* Number of entries after compiling: %s (%s%% removed)\n\n" "$entries_after" \
-        "$(( ( entries_before - entries_after )*100/entries_before ))"
 
-    printf "* Domains found in Tranco (%s):\n---\n%s\n---\n\n" "$(wc -w <<< "$in_tranco")" "$in_tranco"
+    printf "* Number of entries after compiling: %s (%s%% removed)\n\n" \
+        "$entries_after" "$(( ( entries_before - entries_after )*100/entries_before ))"
+
+    printf "* Domains found in Tranco (%s):\n---\n%s\n---\n\n" \
+        "$(wc -w <<< "$in_tranco")" "$in_tranco"
 
     printf "* Number of dead domains: %s (%s%%)\n\n" "$dead_count" \
         "$(( dead_count*100/entries_before ))"
+
+    # Export variables for use in workflow
+    export ENTRIES_BEFORE="$entries_before"
+    export LINES_REMOVED="$lines_removed"
+    export ENTRIES_AFTER="$entries_after"
+    export IN_TRANCO="$in_tranco"
+    export DEAD_COUNT="$dead_count"
 }
 
 compile() {
+    printf "\n"
     hostlist-compiler "$1" "$2" -o temp
     mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp > "$3"
 }
@@ -95,5 +106,3 @@ EOF
 }
 
 main "$1"
-
-rm blocklist.tmp
