@@ -1,5 +1,7 @@
 #!/bin/bash
 
+readonly TEMPLATE='data/TEMPLATE.md'
+
 main() {
     # Download blocklist
     curl -L "$1" -o blocklist.tmp
@@ -8,6 +10,8 @@ main() {
     process
 
     print_stats
+
+    generate_results
 }
 
 process() {
@@ -28,7 +32,7 @@ process() {
     compile -c config.json blocklist.tmp
 
     # Count number of entries
-    entries_before="$(wc -l < blocklist.tmp)"
+    entries_count="$(wc -l < blocklist.tmp)"
 
     # Checked for entries removed by Hostlist Compiler
     compile -i blocklist.tmp compiled.tmp
@@ -43,10 +47,11 @@ process() {
     # Check for dead domains
     sed 's/.*/||&^/' blocklist.tmp > temp
     printf "\n"
-    dead-domains-linter -i temp --export dead.tmp
+    # DISABLE FOR NOW
+    #dead-domains-linter -i temp --export dead.tmp
     # wc -l shows 0 dead when there 1 dead domain. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
-    dead_count="$(wc -w < dead.tmp)"
+    #dead_count="$(wc -w < dead.tmp)"
 
     # Check for domain coverage in other blocklists
     blocklists=(
@@ -59,6 +64,14 @@ process() {
     #    compile -i external_blocklist.tmp -o external_blocklist.tmp
     #    comm -23 compiled.tmp external_blocklist.tmp
     #done
+}
+
+generate_results() {
+    replace 'ENTRIES_COUNT' "$entries_count"
+}
+
+replace() {
+    sed -i "s/${1}/{$2}/g" "$TEMPLATE"
 }
 
 print_stats() {
