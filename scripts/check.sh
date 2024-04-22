@@ -77,7 +77,7 @@ process_blocklist() {
 #   $1: keyword to replace
 #   $2: replacement
 replace() {
-    sed -i "0,/${1}/s//${1}/${2}/" "$TEMPLATE"
+    sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
 }
 
 # Function 'generate_results' creates the markdown results to reply to the
