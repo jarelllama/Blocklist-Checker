@@ -19,7 +19,7 @@ jobs:
 
       - name: Check blocklist
         run: |
-          url="$(mawk '/http/' <<< "${{ github.event.issue.body }}")"
+          url="$(grep -z 'http' <<< "${{ github.event.issue.body }}")"
           bash scripts/check.sh
 
           # Update issue title
