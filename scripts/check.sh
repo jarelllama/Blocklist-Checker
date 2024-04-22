@@ -112,11 +112,11 @@ generate_results() {
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace ENTRIES_REMOVED_COUNT "$entries_removed_count"
     replace ENTRIES_REMOVED_PERCENTAGE "$entries_removed_percentage"
-    replace ENTRIES_REMOVED "$entries_removed"
+    replace ENTRIES_REMOVED "${entries_removed//$'\n'/\\n}"
     replace COMPILED_ENTRIES_COUNT "$compiled_entries_count"
     replace ENTRIES_COUNT "$entries_count"
     replace IN_TRANCO_COUNT "$in_tranco_count"
-    replace IN_TRANCO "$in_tranco"
+    replace IN_TRANCO "${in_tranco//$'\n'/\\n}"
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace DUPLICATE_TABLE "$table"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
