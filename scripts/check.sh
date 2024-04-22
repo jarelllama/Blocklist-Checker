@@ -68,8 +68,10 @@ process_blocklist() {
         name="$(mawk -F "URL: " '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "URL: " '{print $2}' <<< "$blocklist")"
 
-        curl -L "$url" -o external_blocklist.tmp
-        compile -i external_blocklist.tmp -o external_blocklist.tmp
+        # Only the compiled version of the blocklist is used here so we can
+        # overwrite it.
+        curl -L "$url" -o blocklist.tmp
+        compile -c config.json -o external_blocklist.tmp
 
         unique_count="$(comm -23 compiled.tmp external_blocklist.tmp | wc -w)"
         unique_percentage="$(( unique_count * 100 / compiled_entries_count ))"
