@@ -22,7 +22,7 @@ jobs:
           bash scripts/check.sh ${{ github.event.issue.body }}
 
           # Update issue title
-          title="$(mawk -F 'Results for ' '{print $2}')"
+          title="$(mawk -F 'Results for ' '{print $2}' data/TEMPLATE.md)"
           gh issue edit ${{ github.event.issue.number }} -t "$title"
 
           # Comment results
