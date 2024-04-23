@@ -28,6 +28,8 @@ IN_TRANCO
 
 </details>
 
+Percentage of usable domains: USABLE_DOMAINS%
+
 Unique domains not found in other blocklists:
 
 DUPLICATES_TABLE
