@@ -33,7 +33,7 @@ Unique domains not found in other blocklists:
 DUPLICATES_TABLE
 
 <details>
-<summary>Top 10 TLDs</summary>
+<summary>Top 15 TLDs</summary>
 
 ``` text
 TLDS
