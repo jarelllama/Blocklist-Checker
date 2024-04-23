@@ -54,7 +54,7 @@ The following transformations are applied:
 * TrimLines
 * InsertFinalNewLine
 
-These transformations remove non-domain entries like IP addresses and empty lines, along with Unicode. Unicode in blocklists should be converted to Punycode for compatibility.
+These transformations remove non-domain entries like IP addresses and Unicode. Unicode in blocklists should be converted to Punycode for compatibility.
 
 The percentage next to the count is the entries removed from the total compressed entries.
 
