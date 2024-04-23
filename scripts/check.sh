@@ -107,7 +107,8 @@ process_blocklist() {
     done < "$BLOCKLISTS_TO_COMPARE"
 
     # Get the top 10 TLDs
-    tlds="$(mawk -F '.' '{print $NF}' | sort | uniq -c | sort -nr | head -n 10)"
+    tlds="$(mawk -F '.' '{print $NF}' compressed.tmp | sort | uniq -c \
+        | sort -nr | head -n 10)"
 }
 
 # Function 'replace' updates the markdown template with values from the
