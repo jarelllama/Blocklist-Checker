@@ -29,7 +29,7 @@ The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?
 * Compress
 * RemoveModifiers
 
-These transformations remove redunant rules and strip modifiers to convert Adblock Plus rules to domains.
+These transformations remove redundant rules and strip modifiers to convert the blocklist format to domains.
 
 The percentage next to the count is the entries compressed from the total raw entries (a higher percentage means higher compression).
 
@@ -76,7 +76,7 @@ The percentage shows what percent of domains are unique to the blocklist being c
 
 ### Top 15 TLDs
 
-The number of occurrences for the top 15 TLDs in the compressed entries.
+The number of occurrences for the top 15 top-level domains (TLDs) in the compressed entries.
 
 ### Processing time
 
