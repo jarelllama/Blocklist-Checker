@@ -35,6 +35,12 @@ The percentage next to the count is the entries compressed from the total raw en
 
 Note that the compressed blocklist is used for all further processing.
 
+### Percentage of dead domains
+
+The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
+
+To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
+
 ### Invalid entries
 
 The number of entries deemed invalid and removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
@@ -55,12 +61,6 @@ The percentage next to the count is the entries removed from the total compresse
 ### Domains found in Tranco
 
 The number of domains found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found.
-
-### Percentage of dead domains
-
-The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
-
-To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
 
 ### Unique domains not found in other blocklists
 
