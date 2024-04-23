@@ -105,6 +105,9 @@ process_blocklist() {
         unique_percentage="$(( unique_count * 100 / compressed_count ))"
         duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
+
+    # Get the top 10 TLDs
+    tlds="$(mawk -F '.' '{print $NF}' | sort | uniq -c | sort -nr | head -n 10)"
 }
 
 # Function 'replace' updates the markdown template with values from the
@@ -124,6 +127,7 @@ generate_report() {
     # -z learnt from :https://linuxhint.com/newline_replace_sed/
     invalid_entries="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$invalid_entries")"
     in_tranco="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$in_tranco")"
+    tlds="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$tlds")"
     # Escape slashes and '&'
     title="$(sed 's/[/&]/\\&/g' <<< "$title")"
 
@@ -139,6 +143,7 @@ generate_report() {
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "$in_tranco"
     replace DUPLICATES_TABLE "$duplicates_table"
+    replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
 }
