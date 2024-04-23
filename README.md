@@ -64,7 +64,7 @@ The number of domains found in the [Tranco Top Sites Ranking](https://tranco-lis
 
 ### Unique domains not found in other blocklists
 
-The number of domains that were not found in the specified blocklist in column 2. See the list of blocklists configured for comparison here: [blocklists_to_compare.txt](https://raw.githubusercontent.com/jarelllama/Blocklist-Checker/main/data/blocklists_to_compare.txt)
+The number of domains that were not found in the specified blocklist in column two. See the list of blocklists configured for comparison here: [blocklists_to_compare.txt](https://raw.githubusercontent.com/jarelllama/Blocklist-Checker/main/data/blocklists_to_compare.txt)
 
 The percentage shows what percent of domains are unique to the blocklist being checked.
 
