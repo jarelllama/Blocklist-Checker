@@ -106,9 +106,9 @@ process_blocklist() {
         duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"
 
-    # Get the top 10 TLDs
+    # Get the top TLDs
     tlds="$(mawk -F '.' '{print $NF}' compressed.tmp | sort | uniq -c \
-        | sort -nr | head -n 10)"
+        | sort -nr | head -n 15)"
 }
 
 # Function 'replace' updates the markdown template with values from the
