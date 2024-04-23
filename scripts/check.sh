@@ -147,6 +147,9 @@ generate_report() {
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
+
+    # Remove ending new line for entries
+    sed -iz 's/\n```/```/g' $TEMPLATE"
 }
 
 # Function 'create_hostlist_compiler_config' creates the temporary
