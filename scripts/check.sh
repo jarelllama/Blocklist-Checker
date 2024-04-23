@@ -21,9 +21,11 @@ main() {
 
     # Download blocklist and exit if errored
     curl -L "$URL" -o raw.tmp || exit 1
-    # Remove carriage return characters, empty lines, and trailing
-    # whitespaces
+    # Remove carriage return characters, empty lines, and trailing whitespaces
     sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
+    # Convert to lowercase
+    mawk '{print tolower($0)}' raw.tmp > temp
+    mv temp raw.tmp
     # Intentionally not removing duplicate entries
     sort raw.tmp -o raw.tmp
 
@@ -87,7 +89,7 @@ process_blocklist() {
     # Note the dead percentage is calculated from the 60%
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
-    # Calculator percentage of total usable domains
+    # Calculate percentage of total usable domains
     usable_percentage="$(( 100 - compression_percentage - dead_percentage \
         - invalid_entries_percentage ))"
 
@@ -125,8 +127,7 @@ replace() {
     sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
 }
 
-# Function 'generate_report' creates the markdown report to reply to the
-# issue with.
+# Function 'generate_report' creates the markdown report to reply to the issue.
 generate_report() {
     # Escape new line characters and slashes
     # -z learnt from :https://linuxhint.com/newline_replace_sed/
@@ -155,6 +156,7 @@ generate_report() {
 
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
+    # shellcheck disable=SC2016
     sed -i -z 's/\n```\n/```\n/g' "$TEMPLATE"
 }
 
