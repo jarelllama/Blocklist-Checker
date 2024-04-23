@@ -62,7 +62,7 @@ The percentage next to the count is the entries removed from the total compresse
 
 Percentage of potential domains that can be used in a DNS blocklist.
 
-Calculated from: `raw domains - entries compressed - invalid entries - dead domains`.
+`domains usable = raw domains - entries compressed - invalid entries - dead domains`
 
 ### Domains found in Tranco
 
