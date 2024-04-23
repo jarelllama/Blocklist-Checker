@@ -9,3 +9,4 @@ Jarelllama's Scam Blocklist LIGHT VERSION,https://raw.githubusercontent.com/jare
 oisd big,https://big.oisd.nl/domainswild2
 AdGuard's DNS filter,https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt
 Fabriziosalmi's Hourly Updated Blocklist,https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt
+T145's Black Mirror,https://github.com/T145/black-mirror/releases/download/latest/BLOCK_DOMAIN.txt
