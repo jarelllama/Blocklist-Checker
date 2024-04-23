@@ -87,6 +87,10 @@ process_blocklist() {
     # Note the dead percentage is calculated from the 60%
     dead_percentage="$(( dead_count * 100 / sixty_percent ))"
 
+    # Calculator percentage of total usable domains
+    usable_percentage="$(( 100 - compression_percentage - dead_percentage \
+        - invalid_entries_percentage ))"
+
     # Find unique and duplicate domains in other blocklists
     duplicates_table="| Unique | Blocklist |\n| ---:|:--- |\n"
     while read -r blocklist; do
@@ -141,6 +145,7 @@ generate_report() {
     replace INVALID_ENTRIES_COUNT "$invalid_entries_count"
     replace INVALID_ENTRIES_PERCENTAGE "$invalid_entries_percentage"
     replace INVALID_ENTRIES "$invalid_entries"
+    replace USABLE_PERCENTAGE "$usable_percentage"
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "$in_tranco"
     replace DUPLICATES_TABLE "$duplicates_table"
