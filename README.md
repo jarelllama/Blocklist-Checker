@@ -23,6 +23,14 @@ The number of entries in the blocklist calculated after removing comments and th
 
 The number of entries after compression via [AdGuard's Hostlist Compiler](https://github.com/AdguardTeam/HostlistCompiler).
 
+The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?tab=readme-ov-file#-transformations) are applied:
+
+* RemoveComments
+* Compress
+* RemoveModifiers
+
+These transformations remove redunant rules and strip modifiers to convert Adblock Plus rules to domains.
+
 The percentage next to the count is the entries compressed from the total raw entries (a higher percentage means higher compression).
 
 Note that the compressed blocklist is used for all further processing.
@@ -31,7 +39,7 @@ Note that the compressed blocklist is used for all further processing.
 
 The number of entries deemed invalid and removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
 
-The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?tab=readme-ov-file#-transformations) are applied:
+The following transformations are applied:
 
 * RemoveComments
 * Deduplicate
@@ -52,7 +60,7 @@ The number of domains found in the [Tranco Top Sites Ranking](https://tranco-lis
 
 The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
-To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random.
+To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
 
 ### Unique domains not found in other blocklists
 
