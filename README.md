@@ -68,6 +68,10 @@ The number of domains that were not found in the specified blocklist in column 2
 
 The percentage shows what percent of domains are unique to the blocklist being checked.
 
+### Top 15 TLDs
+
+The number of occurrences for the top 15 TLDs in the compressed entries.
+
 ### Processing time
 
 Time taken in seconds to download the blocklist and generate the report.
