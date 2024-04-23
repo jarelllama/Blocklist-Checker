@@ -95,6 +95,8 @@ process_blocklist() {
 
         curl -L "$url" -o blocklist.tmp
         # Remove carriage return characters and convert ABP format to domains
+        # Hostlist compiler is not used here as the Compress transformation
+        # take a fair bit of time for larger blocklists.
         sed -i 's/\r//g; s/[|\^]//g' blocklist.tmp
         sort -u blocklist.tmp -o blocklist.tmp
 
