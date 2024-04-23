@@ -71,9 +71,9 @@ process_blocklist() {
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # To reduce processing time, 60% of the domains are randomly picked to be
-    # processed by the dead check.
+    # processed by the dead check (capped to 10,000 domains).
     sixty_percent="$(( $(wc -l < compressed.tmp) * 60 / 100 ))"
-    shuf -n "$sixty_percent" compressed.tmp > sixty_percent.tmp
+    shuf -n "$sixty_percent" compressed.tmp | head -n 10000 > sixty_percent.tmp
 
     # Format to Adblock Plus syntax for Dead Domains Linter
     sed -i 's/.*/||&^/' sixty_percent.tmp
