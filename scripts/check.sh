@@ -118,16 +118,20 @@ process_blocklist() {
 #   $2: replacement
 replace() {
     printf "%s\n" "$2"  # Print replacements for debugging
-    
-    # Escape new line characters, slashes, '&', and remove ending new line
-    # -z learnt from :https://linuxhint.com/newline_replace_sed/
-    replacement="$(sed -z 's/\n/\\n/g; s/[/&]/\\&/g; s/\n$//' <<< "$2")"
-    sed -i "0,/${1}/s/${1}/${replacement}/" "$TEMPLATE"
+    sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
 }
 
 # Function 'generate_report' creates the markdown report to reply to the
 # issue with.
 generate_report() {
+    # Escape new line characters and slashes
+    # -z learnt from :https://linuxhint.com/newline_replace_sed/
+    invalid_entries="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$invalid_entries")"
+    in_tranco="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$in_tranco")"
+    tlds="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$tlds")"
+    # Escape slashes and '&'
+    title="$(sed 's/[/&]/\\&/g' <<< "$title")"
+
     replace TITLE "$title"
     replace URL "${URL//\//\\/}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
