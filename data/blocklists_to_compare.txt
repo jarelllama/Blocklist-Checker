@@ -2,6 +2,7 @@ Hagezi's TIF Full,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildc
 Hagezi's TIF Medium,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt
 Hagezi's Multi ULTIMATE,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt
 Hagezi's Multi PRO,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro-onlydomains.txt
+Hagezi's Multi PRO mini,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.mini.txt
 Hagezi's NRD 30 DNS Blocklist,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/nrds.30-onlydomains.txt
 Jarelllama's Scam Blocklist,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/adblock/scams.txt
 Jarelllama's Scam Blocklist LIGHT VERSION,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/wildcard_domains/scams_light.txt
