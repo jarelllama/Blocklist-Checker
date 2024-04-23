@@ -149,7 +149,7 @@ generate_report() {
     replace GENERATION_TIME "$(date -u)"
 
     # Remove ending new line for entries
-    sed -iz 's/\n```\n/```\n/g' $TEMPLATE"
+    sed -iz 's/\n```\n/```\n/g' "$TEMPLATE"
 }
 
 # Function 'create_hostlist_compiler_config' creates the temporary
