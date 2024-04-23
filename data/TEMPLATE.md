@@ -32,6 +32,15 @@ Unique domains not found in other blocklists:
 
 DUPLICATES_TABLE
 
+<details>
+<summary>Top 10 TLDs</summary>
+
+``` text
+TLDS
+```
+
+</details>
+
 Processing time: PROCESSING_TIME seconds
 
 *See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.*
