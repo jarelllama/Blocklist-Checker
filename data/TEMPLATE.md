@@ -2,7 +2,7 @@
 
 <URL>
 
-*Report generated on GENERATION_TIME using [jarelllama/Blocklist-Checker](https://github.com/jarelllama/Blocklist-Checker).*
+*Generated on GENERATION_TIME using [jarelllama/Blocklist-Checker](https://github.com/jarelllama/Blocklist-Checker).*
 
 Number of raw entries: RAW_COUNT
 
