@@ -50,9 +50,18 @@ Processing time: PROCESSING_TIME seconds
 <details>
 <summary>Dev info</summary>
 
-Domains selected for dead check: DEAD_SELECTED_COUNT<br>
-Dead domains cache dead hits: DEAD_CACHE_HITS<br>
-Dead domains cache alive hits: DEAD_CACHE_ALIVE_HITS<br>
-Dead domains cache size: DEAD_CACHE_COUNT entries<br>
+All cache hits: ALL_CACHE_HITS
+
+Dead domains cache size: DEAD_CACHE_COUNT entries
+
+Alive domains cache size: ALIVE_CACHE_COUNT entries
+
+Total cache size: TOTAL_CACHE_COUNT entries
+
+Domains selected for dead check: DEAD_SELECTED_COUNT
+
+Dead domains cache dead hits: DEAD_CACHE_HITS
+
+Dead domains cache alive hits: DEAD_CACHE_ALIVE_HITS
 
 </details>

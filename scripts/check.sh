@@ -17,6 +17,29 @@ main() {
         npm install -g @adguard/dead-domains-linter
     fi
 
+    # Download Tranco
+    if [[ ! -f tranco.tmp ]]; then
+        curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
+            --retry 2 --retry-all-errors | gunzip - > tranco.tmp
+        sed -i 's/^.*,//; s/\r//g' tranco.tmp
+        sort tranco.tmp -o tranco.tmp
+    fi
+
+    # Download blocklists for comparison
+    while read -r blocklist; do
+        name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
+        url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
+
+        if [[ ! -f "${name}_blocklist.tmp" ]]; then
+            curl -L "$url" -o "${name}_blocklist.tmp"
+            # Remove CRG and convert ABP format to domains
+            # Hostlist compiler is not used here as the Compress transformation
+            # take a fair bit of time for larger blocklists.
+            sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
+            sort -u "${name}_blocklist.tmp" -o "${name}_blocklist.tmp"
+        fi
+    done < "$BLOCKLISTS_TO_COMPARE"
+
     execution_time="$(date +%s)"
 
     # Download blocklist and exit if errored
@@ -65,42 +88,58 @@ process_blocklist() {
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
     dead_selected_count="$(wc -l < selection.tmp)"
 
-    # Create dead domains cache if missing
-    touch dead_domains_cache.tmp
+    # Create dead/alive domains cache if missing
+    touch dead_domains_cache.tmp alive_domains_cache.tmp
 
     # Get cached dead domains
     comm -12 dead_domains_cache.tmp selection.tmp > dead_cache_hits.tmp
     dead_cache_hits="$(wc -l < dead_cache_hits.tmp)"
 
+    # Get cached alive domains
+    comm -12 alive_domains_cache.tmp selection.tmp > alive_cache_hits.tmp
+    alive_cache_hits="$(wc -l < alive_cache_hits.tmp)"
+
+    # Cumulate all cache hits
+    sort -u dead_cache_hits.tmp alive_cache_hits.tmp -o all_cache_hits.tmp
+    all_cache_hits="$(wc -l < all_cache_hits.tmp)"
+
     # 50% of the cached hits are used to improve processing speed, while
-    # the other 50% are kept to check for resurrected domains.
-    shuf -n "$(( dead_cache_hits / 2 ))" dead_cache_hits.tmp \
-        | sort -o dead_cache_50.tmp
-    comm -23 selection.tmp dead_cache_50.tmp > temp
+    # the other 50% are kept to check for dead/resurrected domains in them.
+    shuf -n "$(( all_cache_hits / 2 ))" all_cache_hits.tmp \
+        | sort -o cache_50.tmp
+    comm -23 selection.tmp cache_50.tmp > temp
     mv temp selection.tmp
 
     # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
-    dead-domains-linter -i selection.tmp --export new_dead_domains.tmp
+    dead-domains-linter -i selection.tmp --export dead_domains.tmp
     printf "\n" >> new_dead_domains.tmp
 
     # Get alive domains
-    comm -23 selection.tmp new_dead_domains.tmp > alive_domains.tmp
+    comm -23 selection.tmp dead_domains.tmp > alive_domains.tmp
+
+    # Update dead domains cache
+    sort -u dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
+    dead_cache_count="$(wc -l <  dead_domains_cache.tmp)"
+
+    # Update alive domains cache
+    sort -u alive_domains.tmp alive_domains_cache.tmp -o  alive_domains_cache.tmp
+    alive_cache_count="$(wc -l <  alive_domains_cache.tmp)"
+
+    total_cache_count="$(( dead_cache_count + alive_cache_count ))"
 
     # Get resurrected domains in dead domains cache
-    comm -12 alive_domains.tmp dead_cache_50.tmp > alive_domains_in_cache.tmp
+    comm -12 alive_domains_cache.tmp dead_domains_cache.tmp > alive_domains_in_cache.tmp
     dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
 
     # Remove resurrected domains from dead domains cache
     comm -23 dead_domains_cache.tmp alive_domains_in_cache.tmp > temp
     mv temp dead_domains_cache.tmp
 
-    # Add new dead domains to dead domains cache
-    sort -u new_dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
-    dead_cache_count="$(wc -l < dead_domains_cache.tmp )"
+    #
 
     # Calculate total dead domains removed from the blocklist
-    sort -u dead_cache_hits.tmp new_dead_domains.tmp -o dead_domains.tmp
+    sort -u dead_cache_hits.tmp dead_domains.tmp -o dead_domains.tmp
     dead_count="$(wc -l < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
@@ -113,12 +152,6 @@ process_blocklist() {
     invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
 
     # Check for domains in Tranco
-    if [[ ! -f tranco.tmp ]]; then
-        curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
-            --retry 2 --retry-all-errors | gunzip - > tranco.tmp
-        sed -i 's/^.*,//; s/\r//g' tranco.tmp
-        sort tranco.tmp -o tranco.tmp
-    fi
     in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
@@ -129,24 +162,13 @@ process_blocklist() {
 
     # Find unique and duplicate domains in other blocklists
     duplicates_table="| Unique | Blocklist |\n| ---:|:--- |\n"
-    while read -r blocklist; do
-        name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
-        url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
-
-        if [[ ! -f "${name}_blocklist.tmp" ]]; then
-            curl -L "$url" -o "${name}_blocklist.tmp"
-            # Remove CRG and convert ABP format to domains
-            # Hostlist compiler is not used here as the Compress transformation
-            # take a fair bit of time for larger blocklists.
-            sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
-            sort -u "${name}_blocklist.tmp" -o "${name}_blocklist.tmp"
-        fi
-
+    for blocklist in *_blocklist.tmp; do
+        name="${blocklist%_blocklist.tmp}"
         # wc -l seems to work just fine here
         unique_count="$(comm -23 compressed.tmp "${name}_blocklist.tmp" | wc -l)"
         unique_percentage="$(( unique_count * 100 / compressed_count ))"
         duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
-    done < "$BLOCKLISTS_TO_COMPARE"
+    done
 
     # Get the top TLDs
     tlds="$(mawk -F '.' '{print $NF}' compressed.tmp | sort | uniq -c \
