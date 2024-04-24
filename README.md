@@ -7,7 +7,8 @@ Generate a simple static report for DNS blocklists or see previous reports of re
 ## How to
 
 1. Open a new issue: [Check a blocklist](https://github.com/jarelllama/Blocklist-Checker/issues/new/choose)
-2. Enter the URL to the raw file of the blocklist
+2. Enter the URL to the raw file of the blocklist<br>
+   **Supported formats: domains, Adblock Plus, Hosts**
 3. Wait a few minutes for the report to generate
 4. The GitHub Actions bot will reply with the report
 
