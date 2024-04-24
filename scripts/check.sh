@@ -88,24 +88,16 @@ process_blocklist() {
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
     dead_selected_count="$(wc -l < selection.tmp)"
 
-    # Create dead/alive domains cache if missing
-    touch dead_domains_cache.tmp alive_domains_cache.tmp
+    # Create domain cache if missing
+    touch domain_cache.tmp
 
     # Get cached dead domains
-    comm -12 dead_domains_cache.tmp selection.tmp > dead_cache_hits.tmp
-    dead_cache_hits="$(wc -l < dead_cache_hits.tmp)"
-
-    # Get cached alive domains
-    comm -12 alive_domains_cache.tmp selection.tmp > alive_cache_hits.tmp
-    alive_cache_hits="$(wc -l < alive_cache_hits.tmp)"
-
-    # Cumulate all cache hits
-    sort -u dead_cache_hits.tmp alive_cache_hits.tmp -o all_cache_hits.tmp
-    all_cache_hits="$(wc -l < all_cache_hits.tmp)"
+    comm -12 domain_cache.tmp selection.tmp > cache_hits.tmp
+    cache_hits="$(wc -l < cache_hits.tmp)"
 
     # 50% of the cached hits are used to improve processing speed, while
     # the other 50% are kept to check for dead/resurrected domains in them.
-    shuf -n "$(( all_cache_hits / 2 ))" all_cache_hits.tmp \
+    shuf -n "$(( cache_hits / 2 ))" cache_hits.tmp \
         | sort -o cache_50.tmp
     comm -23 selection.tmp cache_50.tmp > temp
     mv temp selection.tmp
@@ -117,6 +109,10 @@ process_blocklist() {
 
     # Get alive domains
     comm -23 selection.tmp dead_domains.tmp > alive_domains.tmp
+
+    # Remove dead domains from the cache
+    comm -23 domain_cache.tmp dead_domains.tmp > temp
+    mv temp domain_cache.tmp
 
     # Update dead domains cache
     sort -u dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp

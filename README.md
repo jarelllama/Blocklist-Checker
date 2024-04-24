@@ -1,5 +1,7 @@
 # Jarelllama's Blocklist Checker
 
+**IN MAINTAINENCE MODE**
+
 Generate a simple static report for DNS blocklists or see previous reports of requested blocklists.
 
 **See all checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22check+blocklist%22+label%3A%22report+generated%22+).**
@@ -8,7 +10,7 @@ Generate a simple static report for DNS blocklists or see previous reports of re
 
 1. Open a new issue: [Check a blocklist](https://github.com/jarelllama/Blocklist-Checker/issues/new/choose)
 2. Enter the URL to the raw file of the blocklist<br>
-   **Supported formats: Domains, Adblock Plus, Hosts**
+   **Supported formats: domains, Adblock Plus, Hosts**
 3. Wait a few minutes for the report to generate
 4. The GitHub Actions bot will reply with the report
 
@@ -85,4 +87,4 @@ The number of occurrences for the top 15 top-level domains (TLDs) in the compres
 
 ### Processing time
 
-Time taken in seconds to download the blocklist and generate the report.
+Time taken in seconds to download the blocklist and generate the report. Includes time taken to download
