@@ -45,7 +45,7 @@ main() {
             sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
             sort -u "${name}_blocklist.tmp" -o "${name}_blocklist.tmp"
         fi
-    done < "$BLOCKLISTS_TO_COMPARE"
+    done <<< "$(sort $BLOCKLISTS_TO_COMPARE)"
 
     execution_time="$(date +%s)"
 
