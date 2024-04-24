@@ -28,7 +28,7 @@ jobs:
             ~/.npm
             tranco.tmp
             *_blocklist.tmp
-          # Restore cache from today
+          # Restore cache from today (do not restore if the date does not match)
           key: dependencies-${{ env.DATE }}
 
       - name: Restore dead domains cache

@@ -71,36 +71,41 @@ process_blocklist() {
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
 
-    # 50% of the dead domains cache is checked for hits, while the other 50% is
-    # used to check for resurrected domains.
-    touch dead_cache.tmp  # For if the cache is missing
-    shuf -n "$(( $(wc -l < dead_cache.tmp ) / 2 ))" dead_cache.tmp \
-        | sort -o dead_cache_50.tmp
+    # Create dead domains cache if missing
+    touch dead_cache.tmp
 
-    # Remove domains from dead domains cache
-    comm -12 selection.tmp dead_cache_50.tmp > known_dead_domains.tmp
-    comm -23 selection.tmp known_dead_domains.tmp > temp
+    # Get cached dead domains
+    comm -12 dead_cache.tmp selection.tmp > dead_cache_hits.tmp
+    dead_cache_hits="$(wc -l < dead_cache_hits.tmp)"
+
+    # 50% of the cached hits are used to improve processing speed, while
+    # the other 50% are kept to check for resurrected domains.
+    shuf -n "$(( dead_cache_hits / 2 ))" dead_cache_hits.tmp \
+        | sort -o dead_cache_50.tmp
+    comm -23 selection.tmp dead_cache_50.tmp > temp
     mv temp selection.tmp
-    dead_cache_hits="$(wc -l < known_dead_domains.tmp)"
 
     # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
     dead-domains-linter -i selection.tmp --export new_dead_domains.tmp
     printf "\n" >> new_dead_domains.tmp
 
-    # Get resurrected domains
+    # Get alive domains
     comm -23 selection.tmp new_dead_domains.tmp > alive_domains.tmp
+
+    # Get resurrected domains in dead domains cache
+    comm -12 alive_domains.tmp dead_cache_50.tmp > alive_domains_in_cache.tmp
+    dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
+
     # Remove resurrected domains from dead domains cache
-    comm -12 alive_domains.tmp dead_cache.tmp > alive_domains_in_cache.tmp
     comm -23 dead_cache.tmp alive_domains_in_cache.tmp > temp
     mv temp dead_cache.tmp
-    dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
 
     # Add new dead domains to dead domains cache
     sort -u new_dead_domains.tmp dead_cache.tmp -o dead_cache.tmp
 
     # Calculate total dead domains
-    sort -u known_dead_domains.tmp new_dead_domains.tmp -o dead_domains.tmp
+    sort -u dead_cache_hits.tmp new_dead_domains.tmp -o dead_domains.tmp
     dead_count="$(wc -l < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
