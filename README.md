@@ -1,7 +1,5 @@
 # Jarelllama's Blocklist Checker
 
-**IN MAINTAINENCE MODE**
-
 Generate a simple static report for DNS blocklists or see previous reports of requested blocklists.
 
 **See all checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22check+blocklist%22+label%3A%22report+generated%22+).**
@@ -40,9 +38,7 @@ Note that the compressed blocklist is used for all further processing.
 
 ### Percentage of dead domains
 
-**WIP**
-
-The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
+An estimate of the percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
 For blocklists with more than 1000 compressed entries, only 50% of the domains are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
 

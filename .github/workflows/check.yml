@@ -31,13 +31,6 @@ jobs:
           # Restore cache from today (do not restore if the date does not match)
           key: dependencies-${{ env.DATE }}
 
-      - name: Restore dead domains cache
-        uses: actions/cache/restore@v4
-        with:
-          path: dead_domains_cache.tmp
-          key: dead-domains
-          restore-keys: dead-domains
-
       - name: Check blocklist
         run: |
           # On error
@@ -68,7 +61,7 @@ jobs:
 
       - name: Cache dependencies
         # Cache only if no cache exists for today
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+        if: ${{ steps.restore-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |
@@ -77,9 +70,3 @@ jobs:
             *_blocklist.tmp
           # Cache dependencies from today
           key: dependencies-${{ env.DATE }}
-
-      - name: Update dead domains cache
-        uses: actions/cache/save@v4
-        with:
-          path: dead_domains_cache.tmp
-          key: dead-domains-${{ hashFiles('dead_domains_cache.tmp') }}

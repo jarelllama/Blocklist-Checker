@@ -32,7 +32,7 @@ main() {
 
         if [[ ! -f "${name}_blocklist.tmp" ]]; then
             curl -L "$url" -o "${name}_blocklist.tmp"
-            # Remove CRG and convert ABP format to domains
+            # Remove carriage return characters and convert ABP to Domains
             # Hostlist compiler is not used here as the Compress transformation
             # take a fair bit of time for larger blocklists.
             sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
@@ -46,11 +46,11 @@ main() {
     curl -L "$URL" -o raw.tmp || exit 1
 
     # Remove carriage return characters, empty lines, and trailing whitespaces
-    # Copied this from the Scam Blocklist, that's why it's on its own line
+    # Copied over from the Scam Blocklist, that's why it's on its own line
     sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
-    # (use the first occurrence)
+    # (use the first occurrence- AdGuard's DNS filter has multiple titles)
     title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
     title="${title:-$URL}"
 
@@ -68,7 +68,7 @@ process_blocklist() {
     # Count number of raw uncompressed entries
     raw_count="$(wc -l < raw.tmp)"
 
-    # Compress and compile to standardized domains format
+    # Compress and compile to standardized Domains format
     # (removes content modifiers)
     create_hostlist_compiler_config
     compile -c config.json compressed.tmp
@@ -86,56 +86,11 @@ process_blocklist() {
     selection_count="$(( $(wc -l < compressed.tmp) * selection_percentage / 100 ))"
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
-    dead_selected_count="$(wc -l < selection.tmp)"
-
-    # Create domain cache if missing
-    touch domain_cache.tmp
-
-    # Get cached dead domains
-    comm -12 domain_cache.tmp selection.tmp > cache_hits.tmp
-    cache_hits="$(wc -l < cache_hits.tmp)"
-
-    # 50% of the cached hits are used to improve processing speed, while
-    # the other 50% are kept to check for dead/resurrected domains in them.
-    shuf -n "$(( cache_hits / 2 ))" cache_hits.tmp \
-        | sort -o cache_50.tmp
-    comm -23 selection.tmp cache_50.tmp > temp
-    mv temp selection.tmp
 
     # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
     dead-domains-linter -i selection.tmp --export dead_domains.tmp
-    printf "\n" >> new_dead_domains.tmp
-
-    # Get alive domains
-    comm -23 selection.tmp dead_domains.tmp > alive_domains.tmp
-
-    # Remove dead domains from the cache
-    comm -23 domain_cache.tmp dead_domains.tmp > temp
-    mv temp domain_cache.tmp
-
-    # Update dead domains cache
-    sort -u dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
-    dead_cache_count="$(wc -l <  dead_domains_cache.tmp)"
-
-    # Update alive domains cache
-    sort -u alive_domains.tmp alive_domains_cache.tmp -o  alive_domains_cache.tmp
-    alive_cache_count="$(wc -l <  alive_domains_cache.tmp)"
-
-    total_cache_count="$(( dead_cache_count + alive_cache_count ))"
-
-    # Get resurrected domains in dead domains cache
-    comm -12 alive_domains_cache.tmp dead_domains_cache.tmp > alive_domains_in_cache.tmp
-    dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
-
-    # Remove resurrected domains from dead domains cache
-    comm -23 dead_domains_cache.tmp alive_domains_in_cache.tmp > temp
-    mv temp dead_domains_cache.tmp
-
-    #
-
-    # Calculate total dead domains removed from the blocklist
-    sort -u dead_cache_hits.tmp dead_domains.tmp -o dead_domains.tmp
+    printf "\n" >> dead_domains.tmp
     dead_count="$(wc -l < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
@@ -207,10 +162,6 @@ generate_report() {
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
-    replace DEAD_SELECTED_COUNT "$dead_selected_count"
-    replace DEAD_CACHE_HITS "$dead_cache_hits"
-    replace DEAD_CACHE_ALIVE_HITS "$dead_cache_alive_hits"
-    replace DEAD_CACHE_COUNT "$dead_cache_count"
 
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
