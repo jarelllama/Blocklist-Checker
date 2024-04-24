@@ -31,7 +31,7 @@ main() {
 
     # Get blocklist title if present, otherwise, use blocklist URL
     # Use the first occurrence
-    title="$(mawk -F ': ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
+    title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
     [[ -z "$title" ]] && title="$URL"
 
     # Remove Adblock Plus header and comments
