@@ -72,22 +72,28 @@ process_blocklist() {
     in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
-    # To reduce processing time, 60% of the domains are randomly picked to be
-    # processed by the dead check (capped to 10,000 domains).
-    sixty_percent="$(( $(wc -l < compressed.tmp) * 60 / 100 ))"
-    (( sixty_percent > 10000 )) && sixty_percent=10000
-    shuf -n "$sixty_percent" compressed.tmp > sixty_percent.tmp
+    # To reduce processing time, 50% of the compressed entries are randomly
+    # picked to be processed by the dead check (capped to 10,000 domains).
+    # The results of the 50% is a good representation of the actual percentage
+    # of dead domains (deviation of +-2%).
+    if [[ "$compressed_count" -le 1000 ]]; then
+        selection_percentage=100
+    else
+        selection_percentage=50
+    fi
+    selection_count="$(( $(wc -l < compressed.tmp) * selection_percentage / 100 ))"
+    (( selection_count > 10000 )) && selection_count=10000
+    shuf -n "$selection_count" compressed.tmp > selection.tmp
 
     # Format to Adblock Plus syntax for Dead Domains Linter
-    sed -i 's/.*/||&^/' sixty_percent.tmp
+    sed -i 's/.*/||&^/' selection.tmp
 
     # Check for dead domains
-    dead-domains-linter -i sixty_percent.tmp --export dead.tmp
+    dead-domains-linter -i selection.tmp --export dead.tmp
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead.tmp)"
-    # Note the dead percentage is calculated from the 60%
-    dead_percentage="$(( dead_count * 100 / sixty_percent ))"
+    dead_percentage="$(( dead_count * 100 / selection_count ))"
 
     # Calculate percentage of total usable domains
     usable_percentage="$(( 100 - compression_percentage - dead_percentage \
