@@ -20,7 +20,7 @@ jobs:
       - name: Get date
         run: |
           echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
-          echo "MONTH=$(date +%m%y)" >> $GITHUB_ENV
+          echo "MONTH=$(date +%m%Y)" >> $GITHUB_ENV
 
       - name: Restore cached dependencies
         id: restore-cache
