@@ -39,7 +39,9 @@ Note that the compressed blocklist is used for all further processing.
 
 The percentage of domains found unresolving by [AdGuard's Dead Domains Linter](https://github.com/AdguardTeam/DeadDomainsLinter).
 
-To generate faster reports, only 60% of the compressed entries are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
+For blocklists with more than 1000 compressed entries, only 50% of the domains are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
+
+The selected domains provide an accurate representation of the percentage of dead domains in the blocklist with a deviation of only ±2 while reducing processing time.
 
 ### Invalid entries
 
