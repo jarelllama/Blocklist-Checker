@@ -62,11 +62,11 @@ These transformations remove non-domain entries like IP addresses and Unicode. U
 
 The percentage next to the count is the entries removed from the total compressed entries.
 
-### Percentage of usable domains
+### Percentage of usable compressed domains
 
 Percentage of potential domains that can be used in a DNS blocklist.
 
-`domains usable = raw domains - entries compressed - dead domains - invalid entries`
+`domains usable = compressed entries - dead domains - invalid entries`
 
 ### Domains found in Tranco
 

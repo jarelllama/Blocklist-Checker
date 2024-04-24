@@ -122,6 +122,7 @@ process_blocklist() {
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # Calculate percentage of total usable compressed domains
+    # The '100' here is 100% of the compressed blocklist
     usable_percentage="$(( 100 - dead_percentage \
         - invalid_entries_percentage ))"
 
