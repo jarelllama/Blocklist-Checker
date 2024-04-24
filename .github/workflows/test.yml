@@ -1,0 +1,32 @@
+name: Test
+on:
+  workflow_dispatch:
+
+jobs:
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install depedencies
+        run: time npm install -g @adguard/dead-domains-linter
+
+      - name: Cache depedencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/lib/node_modules
+            /usr/bin/dead-domains-linter
+          key: dependencies
+
+  test-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache depedencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/lib/node_modules
+            /usr/bin/dead-domains-linter
+          key: dependencies
+
+      - name: Verify dependencies were installed
+        run: command -v dead-domains-linter
