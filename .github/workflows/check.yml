@@ -17,6 +17,9 @@ jobs:
         with:
           ref: main
 
+      - name: Get date
+        run: echo "DATE=$(date +%m%d)" >> "$GITHUB_OUTPUT"
+
       - name: Restore cached dependencies
         id: restore-cache
         uses: actions/cache/restore@v4
@@ -25,7 +28,7 @@ jobs:
             ~/.npm
             toplist.tmp
           # Restore cache from today
-          key: dependencies-${{ date +%m%d }}
+          key: dependencies-${{ env.DATE }}
 
       - name: Check blocklist
         run: |
@@ -64,4 +67,4 @@ jobs:
             ~/.npm
             toplist.tmp
           # Cache dependencies from today
-          key: dependencies-${{ date +%m%d }}
+          key: dependencies-${{ env.DATE }}
