@@ -7,14 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install depedencies
-        run: time npm install -g @adguard/dead-domains-linter
+        run: npm install -g @adguard/dead-domains-linter
 
       - name: Cache depedencies
         uses: actions/cache@v3
         with:
           path: |
             /usr/lib/node_modules
-            /usr/local/bin/dead-domains-linter
+            /usr/bin/dead-domains-linter
           key: dependencies
 
   test-cache:
@@ -26,7 +26,7 @@ jobs:
         with:
           path: |
             /usr/lib/node_modules
-            /usr/local/bin/dead-domains-linter
+            /usr/bin/dead-domains-linter
           key: dependencies
 
       - name: Verify dependencies were installed
