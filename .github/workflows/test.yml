@@ -14,7 +14,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            /usr/local/lib/node_modules/npm
+            /usr/local/lib/node_modules/@adguard
           key: dependencies
 
   test-cache:
@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            /usr/local/lib/node_modules/npm
+            /usr/local/lib/node_modules/@adguard
           key: dependencies
 
       - name: Install depedencies
