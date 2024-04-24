@@ -9,8 +9,7 @@ jobs:
       - name: Install depedencies
         run: |
           time npm install -g @adguard/dead-domains-linter
-          time npm install -g @adguard/hostlist-compiler
-          npm config get cache
+          time npm install -g @adguard/hostlist-compiler@1.0.23
 
       - name: Cache depedencies
         uses: actions/cache@v4
