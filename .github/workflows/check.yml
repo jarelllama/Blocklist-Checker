@@ -21,9 +21,9 @@ jobs:
         run: |
           # On error
           trap 'gh issue comment ${{ github.event.issue.number }} -b \
-          "An error occured while checking the blocklist." \
+          "An error occurred while checking the blocklist." \
             && gh issue edit ${{ github.event.issue.number }} \
-            --remove-label 'checking' --add-label "errored"' ERR
+            --remove-label "checking" --add-label "errored"' ERR
 
           # Add 'checking' label
           gh issue edit ${{ github.event.issue.number }} --add-label 'checking'
@@ -44,3 +44,9 @@ jobs:
           "$(cat data/TEMPLATE.md)"
         env:
           GH_TOKEN: ${{ github.token }}
+
+      - name: Cache dead domains
+        uses: actions/cache/save@v4
+        with:
+          path: dead_domains.tmp
+          key: dead-domains

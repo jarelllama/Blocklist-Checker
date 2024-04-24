@@ -92,10 +92,10 @@ process_blocklist() {
     sed -i 's/.*/||&^/' selection.tmp
 
     # Check for dead domains
-    dead-domains-linter -i selection.tmp --export dead.tmp
+    dead-domains-linter -i selection.tmp --export dead_domains.tmp
     # wc -l has trouble providing an accurate count. Seemingly because the Dead
     # Domains Linter does not append a new line at the end.
-    dead_count="$(wc -w < dead.tmp)"
+    dead_count="$(wc -w < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
     # Calculate percentage of total usable domains
