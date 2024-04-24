@@ -63,6 +63,7 @@ process_blocklist() {
     selection_count="$(( $(wc -l < compressed.tmp) * selection_percentage / 100 ))"
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
+    dead_selected_count="$(wc -l < selection.tmp)"
 
     # Create dead domains cache if missing
     touch dead_domains_cache.tmp
@@ -188,6 +189,7 @@ generate_report() {
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
+    replace DEAD_SELECTED_COUNT "$dead_selected_count"
     replace DEAD_CACHE_HITS "$dead_cache_hits"
     replace DEAD_CACHE_ALIVE_HITS "$dead_cache_alive_hits"
     replace DEAD_CACHE_COUNT "$dead_cache_count"
