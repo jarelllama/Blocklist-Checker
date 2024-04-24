@@ -59,24 +59,6 @@ process_blocklist() {
     compressed_count="$(wc -l < compressed.tmp)"
     compression_percentage="$(( $(( raw_count - compressed_count )) * 100 / raw_count ))"
 
-    # Check for invalid entries removed by Hostlist Compiler
-    compile -i compressed.tmp compiled.tmp
-    invalid_entries="$(comm -23 compressed.tmp compiled.tmp)"
-    # Note wc -w being used here might cause lines with whitespaces to be
-    # miscounted. In theory, no blocklist should have spaces anyway.
-    invalid_entries_count="$(wc -w <<< "$invalid_entries")"
-    invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
-
-    # Check for domains in Tranco
-    if [[ ! -f toplist.tmp ]]; then
-        curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
-            --retry 2 --retry-all-errors | gunzip - > tranco.tmp
-        sed -i 's/^.*,//; s/\r//g' tranco.tmp
-        sort tranco.tmp -o tranco.tmp
-    fi
-    in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
-    in_tranco_count="$(wc -w <<< "$in_tranco")"
-
     # To reduce processing time, 50% of the compressed entries are randomly
     # picked to be processed by the dead check (capped to 10,000 domains).
     # The results of the 50% is a good representation of the actual percentage
@@ -99,6 +81,24 @@ process_blocklist() {
     # Domains Linter does not append a new line at the end.
     dead_count="$(wc -w < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
+
+    # Check for invalid entries removed by Hostlist Compiler
+    compile -i compressed.tmp compiled.tmp
+    invalid_entries="$(comm -23 compressed.tmp compiled.tmp)"
+    # Note wc -w being used here might cause lines with whitespaces to be
+    # miscounted. In theory, no blocklist should have spaces anyway.
+    invalid_entries_count="$(wc -w <<< "$invalid_entries")"
+    invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
+
+    # Check for domains in Tranco
+    if [[ ! -f tranco.tmp ]]; then
+        curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
+            --retry 2 --retry-all-errors | gunzip - > tranco.tmp
+        sed -i 's/^.*,//; s/\r//g' tranco.tmp
+        sort tranco.tmp -o tranco.tmp
+    fi
+    in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
+    in_tranco_count="$(wc -w <<< "$in_tranco")"
 
     # Calculate percentage of total usable domains
     usable_percentage="$(( 100 - compression_percentage - dead_percentage \
