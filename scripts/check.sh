@@ -21,21 +21,24 @@ main() {
 
     # Download blocklist and exit if errored
     curl -L "$URL" -o raw.tmp || exit 1
+
     # Remove carriage return characters, empty lines, and trailing whitespaces
     sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
-    # Convert to lowercase
-    mawk '{print tolower($0)}' raw.tmp > temp
-    mv temp raw.tmp
-    # Intentionally not removing duplicate entries
-    sort raw.tmp -o raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
-    # Use the first occurrence
+    # (ues the first occurrence)
     title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
-    [[ -z "$title" ]] && title="$URL"
+    title="${title:-$URL}"
 
     # Remove Adblock Plus header and comments
     sed -i '/[\[#!]/d' raw.tmp
+
+    # Convert to lowercase
+    mawk '{print tolower($0)}' raw.tmp > temp
+    mv temp raw.tmp
+
+    # Intentionally not removing duplicate entries
+    sort raw.tmp -o raw.tmp
 
     process_blocklist
 
