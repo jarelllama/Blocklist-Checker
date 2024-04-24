@@ -9,14 +9,13 @@ jobs:
       - name: Install depedencies
         run: |
           time npm install -g @adguard/dead-domains-linter
-          time npm install -g @adguard/hostlist-compiler@1.0.23
+          time npm install -g @adguard/hostlist-compiler
 
       - name: Cache depedencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
-          key: dependencies
+          path: ~/.npm
+          key: ${{ github.run_id }}
 
   test-cache:
     needs: install-dependencies
@@ -25,9 +24,8 @@ jobs:
       - name: Cache depedencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
-          key: dependencies
+          path: ~/.npm
+          key: ${{ github.run_id }}
 
       - name: Install depedencies
         run: |
