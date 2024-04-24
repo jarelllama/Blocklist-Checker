@@ -18,7 +18,7 @@ jobs:
           ref: main
 
       - name: Get date
-        run: echo "DATE=$(date +%m%d)" >> "$GITHUB_OUTPUT"
+        run: echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
 
       - name: Restore cached dependencies
         id: restore-cache
