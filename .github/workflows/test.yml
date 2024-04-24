@@ -12,7 +12,7 @@ jobs:
           whereis dead-domains-linter
 
       - name: Cache depedencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             /usr/lib/node_modules
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache depedencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             /usr/lib/node_modules
