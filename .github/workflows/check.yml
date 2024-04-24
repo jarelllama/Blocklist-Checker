@@ -17,6 +17,16 @@ jobs:
         with:
           ref: main
 
+      - name: Restore cached dependencies
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.npm
+            toplist.tmp
+          # Restore cache from today
+          key: dependencies-${{ date +%m%d }}
+
       - name: Check blocklist
         run: |
           # On error
@@ -45,8 +55,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Cache dead domains
+      - name: Cache dependencies
+        # Cache only if no cache exist for today
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: dead_domains.tmp
-          key: dead-domains
+          path: |
+            ~/.npm
+            toplist.tmp
+          # Cache dependencies from today
+          key: dependencies-${{ date +%m%d }}

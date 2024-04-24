@@ -9,12 +9,12 @@ readonly URL="$1"
 main() {
     # Install AdGuard's Hostlist Compiler
     if ! command -v hostlist-compiler &> /dev/null; then
-        npm install -g @adguard/hostlist-compiler > /dev/null
+        npm install -g @adguard/hostlist-compiler
     fi
 
     # Install AdGuard's Dead Domains Linter
     if ! command -v dead-domains-linter &> /dev/null; then
-        npm install -g @adguard/dead-domains-linter > /dev/null
+        npm install -g @adguard/dead-domains-linter
     fi
 
     execution_time="$(date +%s)"
