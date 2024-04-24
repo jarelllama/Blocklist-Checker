@@ -19,7 +19,7 @@ main() {
 
     # Download Hagezi's dead domains file to use as a "cache"
     if [[ ! -f dead_cache.tmp ]]; then
-        curl -L "https://github.com/hagezi/dns-blocklists/raw/main/share/dead.list-a[a-f]" \
+        curl -LZ "https://github.com/hagezi/dns-blocklists/raw/main/share/dead.list-a[a-f]" \
             | sort -u -o dead_cache.tmp
     fi
 
