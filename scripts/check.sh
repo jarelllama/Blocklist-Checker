@@ -111,8 +111,8 @@ process_blocklist() {
     in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
-    # Calculate percentage of total usable domains
-    usable_percentage="$(( 100 - compression_percentage - dead_percentage \
+    # Calculate percentage of total usable compressed domains
+    usable_percentage="$(( 100 - dead_percentage \
         - invalid_entries_percentage ))"
 
     # Find unique and duplicate domains in other blocklists
