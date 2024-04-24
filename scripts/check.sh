@@ -72,10 +72,10 @@ process_blocklist() {
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
 
     # Create dead domains cache if missing
-    touch dead_cache.tmp
+    touch dead_domains_cache.tmp
 
     # Get cached dead domains
-    comm -12 dead_cache.tmp selection.tmp > dead_cache_hits.tmp
+    comm -12 dead_domains_cache.tmp selection.tmp > dead_cache_hits.tmp
     dead_cache_hits="$(wc -l < dead_cache_hits.tmp)"
 
     # 50% of the cached hits are used to improve processing speed, while
@@ -98,11 +98,11 @@ process_blocklist() {
     dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
 
     # Remove resurrected domains from dead domains cache
-    comm -23 dead_cache.tmp alive_domains_in_cache.tmp > temp
-    mv temp dead_cache.tmp
+    comm -23 dead_domains_cache.tmp alive_domains_in_cache.tmp > temp
+    mv temp dead_domains_cache.tmp
 
     # Add new dead domains to dead domains cache
-    sort -u new_dead_domains.tmp dead_cache.tmp -o dead_cache.tmp
+    sort -u new_dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
 
     # Calculate total dead domains
     sort -u dead_cache_hits.tmp new_dead_domains.tmp -o dead_domains.tmp
