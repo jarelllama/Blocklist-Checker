@@ -9,13 +9,12 @@ jobs:
       - name: Install depedencies
         run: |
           time npm install -g @adguard/dead-domains-linter
-          npm
 
       - name: Cache depedencies
         uses: actions/cache@v4
         with:
           path: |
-            /usr/lib/node_modules
+            /usr/local/lib/node_modules/npm
           key: dependencies
 
   test-cache:
@@ -26,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            /usr/lib/node_modules
+            /usr/local/lib/node_modules/npm
           key: dependencies
 
       - name: Install depedencies
