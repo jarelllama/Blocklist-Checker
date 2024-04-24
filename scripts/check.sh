@@ -37,7 +37,7 @@ main() {
     mawk '{print tolower($0)}' raw.tmp > temp
     mv temp raw.tmp
 
-    # Intentionally not removing duplicate entries
+    # Sort without removing duplicate entries
     sort raw.tmp -o raw.tmp
 
     process_blocklist
