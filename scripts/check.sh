@@ -70,16 +70,26 @@ process_blocklist() {
     fi
     selection_count="$(( $(wc -l < compressed.tmp) * selection_percentage / 100 ))"
     (( selection_count > 10000 )) && selection_count=10000
-    shuf -n "$selection_count" compressed.tmp > selection.tmp
+    shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
+
+    # Remove known dead domains from dead domains cache
+    comm -12 selection.tmp dead_domains_cache.tmp > known_dead_domains.tmp
+    comm -23 selection.tmp known_dead_domains.tmp > temp
+    mv temp selection.tmp
 
     # Format to Adblock Plus syntax for Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
 
-    # Check for dead domains
-    dead-domains-linter -i selection.tmp --export dead_domains.tmp
-    # wc -l has trouble providing an accurate count. Seemingly because the Dead
-    # Domains Linter does not append a new line at the end.
-    dead_count="$(wc -w < dead_domains.tmp)"
+    # Check for new dead domains
+    dead-domains-linter -i selection.tmp --export new_dead_domains.tmp
+    printf "\n" >> new_dead_domains.tmp
+
+    # Add new dead domains to dead domains cache
+    sort -u new_dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
+
+    # Calculate total dead domains
+    sort -u known_dead_domains.tmp new_dead_domains.tmp -o dead_domains.tmp
+    dead_count="$(wc -l < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
     # Check for invalid entries removed by Hostlist Compiler
