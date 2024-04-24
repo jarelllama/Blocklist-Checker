@@ -35,7 +35,6 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: dead_domains_cache.tmp
-          key: dead-domains-${{ hashFiles('dead_domains_cache.tmp') }}
           restore-keys: dead-domains
 
       - name: Check blocklist

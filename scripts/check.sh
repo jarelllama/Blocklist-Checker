@@ -49,10 +49,9 @@ process_blocklist() {
     # Count number of raw uncompressed entries
     raw_count="$(wc -l < raw.tmp)"
 
-    create_hostlist_compiler_config
-
     # Compress and compile to standardized domains format
     # Also removes content modifiers
+    create_hostlist_compiler_config
     compile -c config.json compressed.tmp
 
     # Count number of compressed entries
@@ -72,21 +71,33 @@ process_blocklist() {
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
 
-    # Remove known dead domains from dead domains cache
-    touch dead_domains_cache.tmp  # For if the cache is missing
-    comm -12 selection.tmp dead_domains_cache.tmp > known_dead_domains.tmp
+    # 50% of the dead domains cache is checked for hits, while the other 50% is
+    # used to check for resurrected domains.
+    touch dead_cache.tmp  # For if the cache is missing
+    shuf -n "$(( $(wc -l < dead_cache.tmp ) / 2 ))" dead_cache.tmp \
+        | sort -o dead_cache_50.tmp
+
+    # Remove domains from dead domains cache
+    comm -12 selection.tmp dead_cache_50.tmp > known_dead_domains.tmp
     comm -23 selection.tmp known_dead_domains.tmp > temp
     mv temp selection.tmp
+    dead_cache_hits="$(wc -l < known_dead_domains.tmp)"
 
-    # Format to Adblock Plus syntax for Dead Domains Linter
+    # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
-
-    # Check for new dead domains
     dead-domains-linter -i selection.tmp --export new_dead_domains.tmp
     printf "\n" >> new_dead_domains.tmp
 
+    # Get resurrected domains
+    comm -23 selection.tmp new_dead_domains.tmp > alive_domains.tmp
+    # Remove resurrected domains from dead domains cache
+    comm -12 alive_domains.tmp dead_cache.tmp > alive_domains_in_cache.tmp
+    comm -23 dead_cache.tmp alive_domains_in_cache.tmp > temp
+    mv temp dead_cache.tmp
+    dead_cache_alive_hits="$(wc -l < alive_domains_in_cache.tmp)"
+
     # Add new dead domains to dead domains cache
-    sort -u new_dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
+    sort -u new_dead_domains.tmp dead_cache.tmp -o dead_cache.tmp
 
     # Calculate total dead domains
     sort -u known_dead_domains.tmp new_dead_domains.tmp -o dead_domains.tmp
@@ -177,6 +188,8 @@ generate_report() {
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
+    replace DEAD_CACHE_HITS "$dead_cache_hits"
+    replace DEAD_CACHE_ALIVE_HITS "$dead_cache_alive_hits"
 
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz

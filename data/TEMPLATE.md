@@ -28,7 +28,7 @@ IN_TRANCO
 
 </details>
 
-**Percentage of usable domains: USABLE_PERCENTAGE%**
+**Percentage of usable compressed domains: USABLE_PERCENTAGE%**
 
 Unique domains not found in other blocklists:
 
@@ -46,3 +46,10 @@ TLDS
 Processing time: PROCESSING_TIME seconds
 
 *See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.*
+
+<details>
+<summary>Dev info</summary>
+Dead domain cache dead hits: DEAD_CACHE_HITS
+
+Dead domain cache alive hits: DEAD_CACHE_ALIVE_HITS
+</details>
