@@ -68,10 +68,12 @@ process_blocklist() {
     invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
 
     # Check for domains in Tranco
-    curl -L --retry 2 --retry-all-errors 'https://tranco-list.eu/top-1m.csv.zip' \
-        | gunzip - > tranco.tmp
-    sed -i 's/^.*,//; s/\r//g' tranco.tmp
-    sort tranco.tmp -o tranco.tmp
+    if [[ ! -f toplist.tmp ]]; then
+        curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
+            --retry 2 --retry-all-errors | gunzip - > tranco.tmp
+        sed -i 's/^.*,//; s/\r//g' tranco.tmp
+        sort tranco.tmp -o tranco.tmp
+    fi
     in_tranco="$(comm -12 compressed.tmp tranco.tmp)"
     in_tranco_count="$(wc -w <<< "$in_tranco")"
 
@@ -108,15 +110,17 @@ process_blocklist() {
         name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
-        curl -L "$url" -o blocklist.tmp
-        # Remove carriage return characters and convert ABP format to domains
-        # Hostlist compiler is not used here as the Compress transformation
-        # take a fair bit of time for larger blocklists.
-        sed -i 's/\r//g; s/[|\^]//g' blocklist.tmp
-        sort -u blocklist.tmp -o blocklist.tmp
+        if [[ ! -f "${name}_blocklist.tmp" ]]; then
+            curl -L "$url" -o "${name}_blocklist.tmp"
+            # Remove CRG and convert ABP format to domains
+            # Hostlist compiler is not used here as the Compress transformation
+            # take a fair bit of time for larger blocklists.
+            sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
+            sort -u "${name}_blocklist.tmp" -o "${name}_blocklist.tmp"
+        fi
 
         # wc -l seems to work just fine here
-        unique_count="$(comm -23 compressed.tmp blocklist.tmp | wc -l)"
+        unique_count="$(comm -23 compressed.tmp "${name}_blocklist.tmp" | wc -l)"
         unique_percentage="$(( unique_count * 100 / compressed_count ))"
         duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
     done < "$BLOCKLISTS_TO_COMPARE"

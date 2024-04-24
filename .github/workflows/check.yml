@@ -27,8 +27,9 @@ jobs:
           path: |
             ~/.npm
             toplist.tmp
+            *_blocklist.tmp
           # Restore cache from today
-          key: dependencies-$DATE
+          key: dependencies-${{ env.DATE }}
 
       - name: Check blocklist
         run: |
@@ -66,5 +67,6 @@ jobs:
           path: |
             ~/.npm
             toplist.tmp
+            *_blocklist.tmp
           # Cache dependencies from today
-          key: dependencies-$DATE
+          key: dependencies-${{ env.DATE }}
