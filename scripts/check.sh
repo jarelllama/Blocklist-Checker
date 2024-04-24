@@ -73,6 +73,7 @@ process_blocklist() {
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
 
     # Remove known dead domains from dead domains cache
+    touch dead_domains_cache.tmp  # In case the cache got removed
     comm -12 selection.tmp dead_domains_cache.tmp > known_dead_domains.tmp
     comm -23 selection.tmp known_dead_domains.tmp > temp
     mv temp selection.tmp
