@@ -18,18 +18,28 @@ jobs:
           ref: main
 
       - name: Get date
-        run: echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
+        run: |
+          echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
+          echo "MONTH=$(date +%m%y)" >> $GITHUB_ENV
 
       - name: Restore cached dependencies
         id: restore-cache
         uses: actions/cache/restore@v4
         with:
           path: |
-            ~/.npm
             tranco.tmp
             *_blocklist.tmp
-          # Restore cache from today (do not restore if the date does not match)
+          # Restore cache from today (do not restore if date does not match)
           key: dependencies-${{ env.DATE }}
+
+      - name: Restore cached dependencies (monthly)
+        id: restore-cache-monthly
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.npm
+            dead_cache.tmp
+          key: dependencies-${{ env.MONTH }}
 
       - name: Check blocklist
         run: |
@@ -65,8 +75,16 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            ~/.npm
             tranco.tmp
             *_blocklist.tmp
           # Cache dependencies from today
           key: dependencies-${{ env.DATE }}
+
+      - name: Cache dependencies (monthly)
+        if: ${{ steps.restore-cache-monthly.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.npm
+            dead_cache.tmp
+          key: dependencies-${{ env.MONTH }}

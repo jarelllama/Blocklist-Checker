@@ -17,6 +17,12 @@ main() {
         npm install -g @adguard/dead-domains-linter
     fi
 
+    # Download Hagezi's dead domains file to use as a "cache"
+    if [[ ! -f dead_cache.tmp ]]; then
+        curl -L "https://github.com/hagezi/dns-blocklists/raw/main/share/dead.list-a[a-f]" \
+            | sort -u -o dead_cache.tmp
+    fi
+
     # Download Tranco
     if [[ ! -f tranco.tmp ]]; then
         curl -L 'https://tranco-list.eu/top-1m.csv.zip' \
@@ -31,7 +37,8 @@ main() {
         url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
         if [[ ! -f "${name}_blocklist.tmp" ]]; then
-            curl -L "$url" -o "${name}_blocklist.tmp"
+            curl -L --retry 2 --retry-all-errors "$url" \
+                -o "${name}_blocklist.tmp"
             # Remove carriage return characters and convert ABP to Domains
             # Hostlist compiler is not used here as the Compress transformation
             # take a fair bit of time for larger blocklists.
@@ -87,11 +94,19 @@ process_blocklist() {
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
 
+    # Remove domains found in Hagezi's dead domains file
+    comm -12 dead_cache.tmp selection.tmp > known_dead.tmp
+    dead_cache_count="$(wc -l < known_dead.tmp)"
+    comm -23 selection.tmp known_dead.tmp > temp
+    mv temp selection.tmp
+
     # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
     dead-domains-linter -i selection.tmp --export dead_domains.tmp
     printf "\n" >> dead_domains.tmp
-    dead_count="$(wc -l < dead_domains.tmp)"
+
+    # Calculate total dead
+    dead_count="$(( $(wc -l < dead_domains.tmp) + dead_cache_count ))"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
 
     # Check for invalid entries removed by Hostlist Compiler
@@ -162,6 +177,7 @@ generate_report() {
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
+    replace DEAD_CACHE_COUNT "$dead_cache_count"
 
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
