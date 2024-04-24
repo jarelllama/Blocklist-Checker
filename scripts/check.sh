@@ -26,7 +26,7 @@ main() {
     sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
-    # (ues the first occurrence)
+    # (use the first occurrence)
     title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
     title="${title:-$URL}"
 
