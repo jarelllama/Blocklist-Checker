@@ -49,7 +49,9 @@ Processing time: PROCESSING_TIME seconds
 
 <details>
 <summary>Dev info</summary>
-Dead domain cache dead hits: DEAD_CACHE_HITS
+Dead domains cache dead hits: DEAD_CACHE_HITS
 
-Dead domain cache alive hits: DEAD_CACHE_ALIVE_HITS
+Dead domains cache alive hits: DEAD_CACHE_ALIVE_HITS
+
+Total domains in dead domains cache: DEAD_CACHE_COUNT
 </details>

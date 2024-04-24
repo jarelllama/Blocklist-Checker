@@ -23,6 +23,7 @@ main() {
     curl -L "$URL" -o raw.tmp || exit 1
 
     # Remove carriage return characters, empty lines, and trailing whitespaces
+    # Copied this from the Scam Blocklist, that's why it's on its own line
     sed -i 's/\r//g; /^$/d; s/[[:space:]]*$//' raw.tmp
 
     # Get blocklist title if present, otherwise, use blocklist URL
@@ -30,15 +31,10 @@ main() {
     title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
     title="${title:-$URL}"
 
-    # Remove Adblock Plus header and comments
-    sed -i '/[\[#!]/d' raw.tmp
-
-    # Convert to lowercase
-    mawk '{print tolower($0)}' raw.tmp > temp
+    # Remove Adblock Plus header, comments, convert to lowercase, and sort
+    # without removing duplicate entries
+    sed '/[\[#!]/d' raw.tmp | mawk '{print tolower($0)}' | sort -o temp
     mv temp raw.tmp
-
-    # Sort without removing duplicate entries
-    sort raw.tmp -o raw.tmp
 
     process_blocklist
 
@@ -50,7 +46,7 @@ process_blocklist() {
     raw_count="$(wc -l < raw.tmp)"
 
     # Compress and compile to standardized domains format
-    # Also removes content modifiers
+    # (removes content modifiers)
     create_hostlist_compiler_config
     compile -c config.json compressed.tmp
 
@@ -62,11 +58,8 @@ process_blocklist() {
     # picked to be processed by the dead check (capped to 10,000 domains).
     # The results of the 50% is a good representation of the actual percentage
     # of dead domains (deviation of +-2%).
-    if [[ "$compressed_count" -le 1000 ]]; then
-        selection_percentage=100
-    else
-        selection_percentage=50
-    fi
+    [[ "$compressed_count" -le 1000 ]] && selection_percentage=100
+    selection_percentage="${selection_percentage:-50}"
     selection_count="$(( $(wc -l < compressed.tmp) * selection_percentage / 100 ))"
     (( selection_count > 10000 )) && selection_count=10000
     shuf -n "$selection_count" compressed.tmp | sort -o selection.tmp
@@ -103,8 +96,9 @@ process_blocklist() {
 
     # Add new dead domains to dead domains cache
     sort -u new_dead_domains.tmp dead_domains_cache.tmp -o dead_domains_cache.tmp
+    dead_cache_count="$(wc -l < dead_domains_cache.tmp )"
 
-    # Calculate total dead domains
+    # Calculate total dead domains removed from the blocklist
     sort -u dead_cache_hits.tmp new_dead_domains.tmp -o dead_domains.tmp
     dead_count="$(wc -l < dead_domains.tmp)"
     dead_percentage="$(( dead_count * 100 / selection_count ))"
@@ -195,6 +189,7 @@ generate_report() {
     replace GENERATION_TIME "$(date -u)"
     replace DEAD_CACHE_HITS "$dead_cache_hits"
     replace DEAD_CACHE_ALIVE_HITS "$dead_cache_alive_hits"
+    replace DEAD_CACHE_COUNT "$dead_cache_count"
 
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
