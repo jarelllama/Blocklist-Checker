@@ -35,7 +35,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: dead_domains_cache.tmp
-          key: dead-domains-*
+          key: dead-domains
+          restore-keys: dead-domains
 
       - name: Check blocklist
         run: |
