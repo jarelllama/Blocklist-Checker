@@ -14,10 +14,11 @@ jobs:
         with:
           path: |
             /usr/lib/node_modules
-            /usr/bin/dead-domains-linter
+            /usr/local/bin/dead-domains-linter
           key: dependencies
 
   test-cache:
+    needs: install-dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Cache depedencies
@@ -25,7 +26,7 @@ jobs:
         with:
           path: |
             /usr/lib/node_modules
-            /usr/bin/dead-domains-linter
+            /usr/local/bin/dead-domains-linter
           key: dependencies
 
       - name: Verify dependencies were installed
