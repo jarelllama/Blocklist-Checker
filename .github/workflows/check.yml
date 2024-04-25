@@ -61,7 +61,7 @@ jobs:
           bash scripts/check.sh "$url"
 
           # Comment report
-          gh issue comment ${{ github.event.issue.number }} -b \
+          gh issue close ${{ github.event.issue.number }} -c \
           "$(cat data/TEMPLATE.md)"
 
           # Update issue title and label
