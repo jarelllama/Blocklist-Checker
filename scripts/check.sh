@@ -102,7 +102,8 @@ process_blocklist() {
 
     # Check for new dead domains using Dead Domains Linter
     sed -i 's/.*/||&^/' selection.tmp
-    dead-domains-linter -i selection.tmp --export dead_domains.tmp
+    dead-domains-linter --dnscheck=false -i selection.tmp \
+        --export dead_domains.tmp
     printf "\n" >> dead_domains.tmp
 
     # Calculate total dead
