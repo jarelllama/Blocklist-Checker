@@ -47,10 +47,12 @@ jobs:
           trap 'gh issue comment ${{ github.event.issue.number }} -b \
           "An error occurred while checking the blocklist." \
             && gh issue edit ${{ github.event.issue.number }} \
-            --remove-label "checking" --add-label "errored"' ERR
+            --remove-label "check blocklist" --remove-label "checking" \
+            --add-label "errored"' ERR
 
           # Add 'checking' label
-          gh issue edit ${{ github.event.issue.number }} --add-label 'checking'
+          gh issue edit ${{ github.event.issue.number }} \
+            --remove-label 'check blocklist' --add-label 'checking'
 
           # Get URl of blocklist
           url="$(grep 'http' <<< "${{ github.event.issue.body }}")"
