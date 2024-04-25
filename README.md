@@ -48,7 +48,7 @@ An estimate of the percentage of domains found unresolving by [AdGuard's Dead Do
 
 For blocklists with more than 1000 compressed entries, only 50% of the domains are selected for the dead check and used to calculate the percentage. This selection is done at random and capped at 10,000 domains.
 
-The selected domains provide an accurate representation of the percentage of dead domains in the blocklist with a deviation of only ±2 while reducing processing time.
+The selected domains provide a reasonable representation of the percentage of dead domains in the blocklist with a deviation of about ±2 while reducing processing time.
 
 ### Invalid entries
 
@@ -69,7 +69,7 @@ The percentage next to the count is the entries removed from the total compresse
 
 ### Percentage of usable compressed domains
 
-Percentage of potential domains that can be used in a DNS blocklist.
+An estimate of the percentage of potential domains that can be used in a DNS blocklist.
 
 `domains usable = compressed entries - dead domains - invalid entries`
 
