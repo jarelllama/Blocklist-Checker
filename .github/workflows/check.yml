@@ -60,7 +60,7 @@ jobs:
           # Generate report
           bash scripts/check.sh "$url"
 
-          # Comment report
+          # Comment report and close issue
           gh issue close ${{ github.event.issue.number }} -c \
           "$(cat data/TEMPLATE.md)"
 
