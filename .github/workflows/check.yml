@@ -17,7 +17,7 @@ jobs:
         with:
           ref: main
 
-      - name: Get date
+      - name: Get date for caching
         run: |
           echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
           echo "MONTH=$(date +%m%Y)" >> $GITHUB_ENV
