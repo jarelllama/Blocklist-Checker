@@ -58,14 +58,14 @@ jobs:
           # Generate report
           bash scripts/check.sh "$url"
 
+          # Comment report
+          gh issue comment ${{ github.event.issue.number }} -b \
+          "$(cat data/TEMPLATE.md)"
+
           # Update issue title and label
           title="$(mawk -F '*' '/Report for/ {print $2}' data/TEMPLATE.md)"
           gh issue edit ${{ github.event.issue.number }} -t "$title" \
             --remove-label 'checking' --add-label 'report generated'
-
-          # Comment report
-          gh issue comment ${{ github.event.issue.number }} -b \
-          "$(cat data/TEMPLATE.md)"
         env:
           GH_TOKEN: ${{ github.token }}
 
