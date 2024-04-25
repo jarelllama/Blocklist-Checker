@@ -112,8 +112,7 @@ process_blocklist() {
     # Check for invalid entries removed by Hostlist Compiler
     compile -i compressed.tmp compiled.tmp
     invalid_entries="$(comm -23 compressed.tmp compiled.tmp)"
-    # Note wc -w being used here might cause lines with whitespaces to be
-    # miscounted. In theory, no blocklist should have spaces anyway.
+    # Note wc -w miscounts lines with whitespaces as two or more words
     invalid_entries_count="$(wc -w <<< "$invalid_entries")"
     invalid_entries_percentage="$(( invalid_entries_count * 100 / compressed_count ))"
 
