@@ -2,7 +2,7 @@
 
 Generate a simple static report for DNS blocklists or see previous reports of requested blocklists.
 
-**See all checked blocklists [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22report+generated%22).**
+**View all blocklist reports [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22report+generated%22).**
 
 To check if a specific domain is present in a blocklist try:
 
@@ -16,6 +16,7 @@ To check if a specific domain is present in a blocklist try:
    **Supported formats: Domains, Adblock Plus, Hosts**
 3. Make yourself a coffee or tea while the report generates
 4. The GitHub Actions bot will reply with the report
+5. Closing the issue is optional
 
 See what is included in the report below.
 
