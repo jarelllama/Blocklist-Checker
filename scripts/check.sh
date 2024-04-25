@@ -63,7 +63,7 @@ main() {
 
     # Remove Adblock Plus header, comments, convert to lowercase, and sort
     # without removing duplicate entries
-    sed '/[\[#!]/d' raw.tmp | mawk '{print tolower($0)}' | sort -o temp
+    mawk '!/[\[#!]/ {print tolower($0)}' raw.tmp | sort -o temp
     mv temp raw.tmp
 
     process_blocklist
