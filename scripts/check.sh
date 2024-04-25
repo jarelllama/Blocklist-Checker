@@ -210,7 +210,7 @@ EOF
 #   file passed in $3
 compile() {
     hostlist-compiler "$1" "$2" -o temp
-    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort -o "$3"
+    mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort -u -o "$3"
 }
 
 main "$1"
