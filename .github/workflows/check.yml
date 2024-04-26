@@ -29,8 +29,10 @@ jobs:
           path: |
             tranco.tmp
             *_blocklist.tmp
-          # Restore cache from today (do not restore if date does not match)
-          key: dependencies-${{ env.DATE }}
+          # Restore cache when:
+          # - cache matches today's date
+          # - blocklists_to_compare.txt has not changed
+          key: dependencies-${{ env.DATE }}-${{ hashFiles('data/blocklists_to_compare.txt') }}
 
       - name: Restore cached dependencies (monthly)
         id: restore-cache-monthly
@@ -79,8 +81,10 @@ jobs:
           path: |
             tranco.tmp
             *_blocklist.tmp
-          # Cache dependencies from today
-          key: dependencies-${{ env.DATE }}
+          # Cache when:
+          # - previous cache does not match today's date
+          # - blocklists_to_compare.txt has changed
+          key: dependencies-${{ env.DATE }}-${{ hashFiles('data/blocklists_to_compare.txt') }}
 
       - name: Cache dependencies (monthly)
         if: ${{ steps.restore-cache-monthly.outputs.cache-hit != 'true' }}
