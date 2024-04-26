@@ -146,23 +146,16 @@ process_blocklist() {
 #   $1: keyword to replace
 #   $2: replacement
 replace() {
+    # Check if the replacement is a single line or multiple
+    if [[ "$(wc -l <<< "$2")" -gt 1 ]]; then
+        # Limit to 1000 entries to avoid 'Argument list too long' error
+        # Escape new line characters and slashes
+        # -z learnt from :https://linuxhint.com/newline_replace_sed/
+        entries="$(head -n 1000 <<< "$2" | sed -z 's/\n/\\n/g; s/\//\\\//g')"
+    fi
+
     printf "%s\n" "$2"  # Print replacements for debugging
     sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
-}
-
-# Function 'replace_entries' updates the markdown template with entries from
-# the results.
-#   $1: keyword to replace
-#   $2: entries
-replace_entries() {
-    # Escape new line characters and slashes
-    # -z learnt from :https://linuxhint.com/newline_replace_sed/
-    entries="$(sed -z 's/\n/\\n/g; s/\//\\\//g' <<< "$2")"
-
-    # Save sed command to a file to avoid 'Argument list too long' error
-    echo "0,/${1}/s/${1}/${entries}/" > sed_command.tmp
-
-    sed -i -f sed_command.tmp "$TEMPLATE"
 }
 
 # Function 'generate_report' creates the markdown report to reply to the issue.
@@ -175,12 +168,12 @@ generate_report() {
     replace DEAD_PERCENTAGE "$dead_percentage"
     replace INVALID_ENTRIES_COUNT "$invalid_entries_count"
     replace INVALID_ENTRIES_PERCENTAGE "$invalid_entries_percentage"
-    replace_entries INVALID_ENTRIES "$invalid_entries"
+    replace INVALID_ENTRIES "$invalid_entries"
     replace USABLE_PERCENTAGE "$usable_percentage"
     replace IN_TRANCO_COUNT "$in_tranco_count"
-    replace_entries IN_TRANCO "$in_tranco"
+    replace IN_TRANCO "$in_tranco"
     replace DUPLICATES_TABLE "$duplicates_table"
-    replace_entries TLDS "$tlds"
+    replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
     replace DEAD_CACHE_COUNT "$dead_cache_count"
