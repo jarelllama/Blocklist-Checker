@@ -146,16 +146,18 @@ process_blocklist() {
 #   $1: keyword to replace
 #   $2: replacement
 replace() {
+    line="$2"
+
     # Check if the replacement is a single line or multiple
-    if [[ "$(wc -l <<< "$2")" -gt 1 ]]; then
+    if [[ "$(wc -l <<< "$line")" -gt 1 ]]; then
         # Limit to 1000 entries to avoid 'Argument list too long' error
         # Escape new line characters and slashes
         # -z learnt from :https://linuxhint.com/newline_replace_sed/
-        entries="$(head -n 1000 <<< "$2" | sed -z 's/\n/\\n/g; s/[/]/\\&/g')"
+        line="$(head -n 1000 <<< "$line" | sed -z 's/\n/\\n/g; s/[/]/\\&/g')"
     fi
 
-    printf "%s\n" "$2"  # Print replacements for debugging
-    sed -i "0,/${1}/s/${1}/${2}/" "$TEMPLATE"
+    printf "%s\n" "$line"  # Print replacements for debugging
+    sed -i "0,/${1}/s/${1}/${line}/" "$TEMPLATE"
 }
 
 # Function 'generate_report' creates the markdown report to reply to the issue.
