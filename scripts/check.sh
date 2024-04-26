@@ -4,7 +4,7 @@
 
 readonly TEMPLATE='data/TEMPLATE.md'
 readonly BLOCKLISTS_TO_COMPARE='data/blocklists_to_compare.txt'
-readonly URL="$1"
+URL="$1"
 
 main() {
     # Install AdGuard's Hostlist Compiler
@@ -215,4 +215,4 @@ compile() {
     mawk '!/^!/ {gsub(/\||\^/, "", $0); print $0}' temp | sort -u -o "$3"
 }
 
-main "$1"
+main
