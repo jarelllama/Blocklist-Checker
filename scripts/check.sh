@@ -151,7 +151,7 @@ replace() {
         # Limit to 1000 entries to avoid 'Argument list too long' error
         # Escape new line characters and slashes
         # -z learnt from :https://linuxhint.com/newline_replace_sed/
-        entries="$(head -n 1000 <<< "$2" | sed -z 's/\n/\\n/g; s/\//\\\//g')"
+        entries="$(head -n 1000 <<< "$2" | sed -z 's/\n/\\n/g; s/[/]/\\&/g')"
     fi
 
     printf "%s\n" "$2"  # Print replacements for debugging
