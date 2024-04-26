@@ -32,7 +32,7 @@ IN_TRANCO
 
 Unique domains not found in other blocklists:
 
-DUPLICATES_TABLE
+COMPARISON_TABLE
 
 <details>
 <summary>Top 15 TLDs</summary>

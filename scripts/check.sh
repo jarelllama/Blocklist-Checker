@@ -126,13 +126,13 @@ process_blocklist() {
         - invalid_entries_percentage ))"
 
     # Find unique and duplicate domains in other blocklists
-    duplicates_table="| Unique | Blocklist |\n| ---:|:--- |\n"
+    comparison_table="| Unique | Blocklist |\n| ---:|:--- |\n"
     for blocklist in *_blocklist.tmp; do
         name="${blocklist%_blocklist.tmp}"
         # wc -l seems to work just fine here
         unique_count="$(comm -23 compressed.tmp "${name}_blocklist.tmp" | wc -l)"
         unique_percentage="$(( unique_count * 100 / compressed_count ))"
-        duplicates_table="${duplicates_table}| ${unique_count} (${unique_percentage}%) | ${name} |\n"
+        comparison_table="${comparison_table}| ${unique_count} **(${unique_percentage}%)** | ${name} |\n"
     done
 
     # Get the top TLDs
@@ -175,7 +175,7 @@ generate_report() {
     replace USABLE_PERCENTAGE "$usable_percentage"
     replace IN_TRANCO_COUNT "$in_tranco_count"
     replace IN_TRANCO "$in_tranco"
-    replace DUPLICATES_TABLE "$duplicates_table"
+    replace COMPARISON_TABLE "$comparison_table"
     replace TLDS "$tlds"
     replace PROCESSING_TIME "$(( $(date +%s) - execution_time ))"
     replace GENERATION_TIME "$(date -u)"
