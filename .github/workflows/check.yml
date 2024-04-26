@@ -41,6 +41,7 @@ jobs:
           path: |
             ~/.npm
             dead_cache.tmp
+          # Restore cache once a month
           key: dependencies-${{ env.MONTH }}
 
       - name: Check blocklist
@@ -74,16 +75,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Cache dependencies
-        # Cache only if no cache exists for today
+        # Cache only if no cache restored
         if: ${{ steps.restore-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |
             tranco.tmp
             *_blocklist.tmp
-          # Cache when:
-          # - previous cache does not match today's date
-          # - blocklists_to_compare.txt has changed
           key: dependencies-${{ env.DATE }}-${{ hashFiles('data/blocklists_to_compare.txt') }}
 
       - name: Cache dependencies (monthly)
