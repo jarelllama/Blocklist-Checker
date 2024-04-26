@@ -35,7 +35,7 @@ The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?
 * Compress
 * RemoveModifiers
 
-These transformations remove redundant rules and strip modifiers to convert the blocklist format to domains.
+These transformations remove redundant rules and strip modifiers to format the blocklist to domains.
 
 The percentage next to the count is the entries compressed from the total raw entries (a higher percentage means higher compression).
 
@@ -88,4 +88,7 @@ The number of occurrences for the top 15 top-level domains (TLDs) in the compres
 
 ### Processing time
 
-Time taken in seconds to download the blocklist and generate the report. Includes time taken to download
+Time taken in seconds to download the blocklist and generate the report.
+
+Note that the time taken to download dependencies/restore cache is excluded from this calculation.
+
