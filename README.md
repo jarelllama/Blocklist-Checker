@@ -16,7 +16,6 @@ To check if a specific domain is present in a blocklist try:
    **Supported formats: Domains, Adblock Plus, Hosts**
 3. Make yourself a coffee or tea while the report generates
 4. The GitHub Actions bot will reply with the report
-5. Closing the issue is optional
 
 See what is included in the report below.
 
