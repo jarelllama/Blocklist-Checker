@@ -4,6 +4,8 @@ Generate a simple static report for DNS blocklists or see previous reports of re
 
 **View all blocklist reports [here](https://github.com/jarelllama/Blocklist-Checker/issues?q=is%3Aissue+label%3A%22report+generated%22).**
 
+Feel free to request new features!
+
 To check if a specific domain is present in a blocklist try:
 
 * [dnswarden's search function](https://dnswarden.com/search.html)
