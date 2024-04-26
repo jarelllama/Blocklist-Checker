@@ -6,7 +6,9 @@ Hagezi's Multi PRO mini,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest
 Hagezi's NRD 30 DNS Blocklist,https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/nrds.30-onlydomains.txt
 Jarelllama's Scam Blocklist,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/adblock/scams.txt
 Jarelllama's Scam Blocklist LIGHT VERSION,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/wildcard_domains/scams_light.txt
+Jarelllama's NSFW Blocklist,https://raw.githubusercontent.com/jarelllama/Scam-Blocklist/main/lists/adblock/nsfw.txt
 oisd big,https://big.oisd.nl/domainswild2
+oisd nsfw,https://nsfw.oisd.nl/
 AdGuard's DNS filter,https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_15_DnsFilter/filter.txt
 Fabriziosalmi's Hourly Updated Blocklist,https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt
 T145's Black Mirror,https://github.com/T145/black-mirror/releases/download/latest/BLOCK_DOMAIN.txt
