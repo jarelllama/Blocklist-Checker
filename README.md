@@ -52,7 +52,7 @@ The selected domains provide a reasonable representation of the percentage of de
 
 ### Invalid entries
 
-The number of entries deemed invalid and removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed.
+The number of entries deemed invalid and removed by the Hostlist Compiler. Expanding the dropdown reveals the entries removed (limited to 1000 entries).
 
 The following transformations are applied:
 
@@ -75,7 +75,7 @@ An estimate of the percentage of potential domains that can be used in a DNS blo
 
 ### Domains found in Tranco
 
-The number of domains found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found.
+The number of domains found in the [Tranco Top Sites Ranking](https://tranco-list.eu/). Expanding the dropdown reveals the domains found (limited to 1000 entries).
 
 ### Unique domains not found in other blocklists
 
