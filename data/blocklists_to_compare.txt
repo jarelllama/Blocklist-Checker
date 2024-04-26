@@ -13,3 +13,8 @@ AdGuard's DNS filter,https://raw.githubusercontent.com/AdguardTeam/FiltersRegist
 Fabriziosalmi's Hourly Updated Blocklist,https://github.com/fabriziosalmi/blacklists/releases/download/latest/blacklist.txt
 T145's Black Mirror,https://github.com/T145/black-mirror/releases/download/latest/BLOCK_DOMAIN.txt
 Phishing Army,https://phishing.army/download/phishing_army_blocklist_extended.txt
+ShadowWhisperer's Ads list,https://github.com/ShadowWhisperer/BlockLists/raw/master/Lists/Ads
+ShadowWhisperer's Tracking list,https://github.com/ShadowWhisperer/BlockLists/raw/master/Lists/Tracking
+ShadowWhisperer's Adult list,https://github.com/ShadowWhisperer/BlockLists/raw/master/Lists/Adult
+ShadowWhisperer's Scam list,https://github.com/ShadowWhisperer/BlockLists/raw/master/Lists/Scam
+ShadowWhisperer's Malware list,https://github.com/ShadowWhisperer/BlockLists/raw/master/Lists/Malware
