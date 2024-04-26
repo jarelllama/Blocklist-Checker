@@ -5,7 +5,6 @@
 readonly TEMPLATE='data/TEMPLATE.md'
 readonly BLOCKLISTS_TO_COMPARE='data/blocklists_to_compare.txt'
 URL="$1"
-echo "$URL"
 
 main() {
     # Install AdGuard's Hostlist Compiler
@@ -163,8 +162,8 @@ replace() {
 
 # Function 'generate_report' creates the markdown report to reply to the issue.
 generate_report() {
-    replace TITLE "${title//[\/&]/\\&}"  # Escape slashes and '&'
-    replace URL "${URL//[\/]/\\&}"  # Escape slashes
+    replace TITLE "${title//[\/&]/\&}"  # Escape slashes and '&'
+    replace URL "${URL//[\/]/\&}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
     replace COMPRESSED_COUNT "$compressed_count"
     replace COMPRESSION_PERCENTAGE "$compression_percentage"
