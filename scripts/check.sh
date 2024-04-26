@@ -147,6 +147,7 @@ process_blocklist() {
 #   $2: replacement
 replace() {
     line="$2"
+    printf "%s\n" "$line"
 
     # Check if the replacement is a single line or multiple
     if [[ "$(wc -l <<< "$line")" -gt 1 ]]; then
@@ -162,8 +163,8 @@ replace() {
 
 # Function 'generate_report' creates the markdown report to reply to the issue.
 generate_report() {
-    replace TITLE "${title//[\/&]/&}"  # Escape slashes and '&'
-    replace URL "${URL//[\/]/&}"  # Escape slashes
+    replace TITLE "${title//[\/&]/\\&}"  # Escape slashes and '&'
+    replace URL "${URL//[\/]/\\&}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
     replace COMPRESSED_COUNT "$compressed_count"
     replace COMPRESSION_PERCENTAGE "$compression_percentage"
