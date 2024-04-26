@@ -162,8 +162,8 @@ replace() {
 
 # Function 'generate_report' creates the markdown report to reply to the issue.
 generate_report() {
-    replace TITLE "${title//[\/&]/\\\&}"  # Escape slashes and '&'
-    replace URL "${URL//[\/]/\\\&}"  # Escape slashes
+    replace TITLE "${title//[\/&]/\\&}"  # Escape slashes and '&'
+    replace URL "${URL//[\/]/\\&}"  # Escape slashes
     replace RAW_COUNT "$raw_count"
     replace COMPRESSED_COUNT "$compressed_count"
     replace COMPRESSION_PERCENTAGE "$compression_percentage"
