@@ -181,10 +181,11 @@ generate_report() {
     replace GENERATION_TIME "$(date -u)"
     replace DEAD_CACHE_COUNT "$dead_cache_count"
 
+    # Disabled because it causes more problems than it solves
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
     # shellcheck disable=SC2016
-    sed -i -z 's/\n```\n/```\n/g' "$TEMPLATE"
+    #sed -i -z 's/\n```\n/```\n/g' "$TEMPLATE"
 }
 
 # Function 'create_hostlist_compiler_config' creates the temporary
