@@ -184,7 +184,6 @@ generate_report() {
     # Disabled because it causes more problems than it solves
     # Remove ending new line for entries
     # Apparently the arguments cannot be combined into -iz
-    # shellcheck disable=SC2016
     #sed -i -z 's/\n```\n/```\n/g' "$TEMPLATE"
 }
 
