@@ -71,6 +71,8 @@ main() {
     generate_report
 }
 
+# Function 'process_blocklist' runs the various processing on the blocklist to
+# generate the results to be used in the report.
 process_blocklist() {
     # Count number of raw uncompressed entries
     raw_count="$(wc -l < raw.tmp)"
