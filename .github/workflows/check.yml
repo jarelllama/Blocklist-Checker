@@ -10,7 +10,7 @@ permissions:
 jobs:
   check-blocklist:
     if: ${{ github.event.label.name == 'check blocklist' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 180
     steps:
       - name: Checkout
