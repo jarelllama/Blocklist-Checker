@@ -33,17 +33,18 @@ main() {
 
     # Download blocklists for comparison
     while read -r blocklist; do
-        name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
-        url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
+        blocklist_name="$(mawk -F "," '{print $1}' <<< "$blocklist")"
+        blocklist_url="$(mawk -F "," '{print $2}' <<< "$blocklist")"
 
-        if [[ ! -f "${name}_blocklist.tmp" ]]; then
-            curl -L --retry 2 --retry-all-errors "$url" \
-                -o "${name}_blocklist.tmp"
+        if [[ ! -f "${blocklist_name}_blocklist.tmp" ]]; then
+            curl -L --retry 2 --retry-all-errors "$blocklist_url" \
+                -o "${blocklist_name}_blocklist.tmp"
             # Remove carriage return characters and convert ABP to Domains
             # Hostlist compiler is not used here as the Compress transformation
             # take a fair bit of time for larger blocklists.
-            sed -i 's/\r//g; s/[|\^]//g' "${name}_blocklist.tmp"
-            sort -u "${name}_blocklist.tmp" -o "${name}_blocklist.tmp"
+            sed -i 's/\r//g; s/[|\^]//g' "${blocklist_name}_blocklist.tmp"
+            sort -u "${blocklist_name}_blocklist.tmp" \
+                -o "${blocklist_name}_blocklist.tmp"
         fi
     done <<< "$(sort $BLOCKLISTS_TO_COMPARE)"
 
@@ -58,8 +59,9 @@ main() {
 
     # Get blocklist title if present, otherwise, use blocklist URL
     # (use the first occurrence- AdGuard's DNS filter has multiple titles)
-    title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp | head -n 1)"
-    title="${title:-$URL}"
+    blocklist_title="$(mawk -F 'Title: ' '/Title:/ {print $2}' raw.tmp \
+        | head -n 1)"
+    blocklist_title="${blocklist_title:-$URL}"
 
     # Remove Adblock Plus header, comments, convert to lowercase, and sort
     # without removing duplicate entries
@@ -130,11 +132,11 @@ process_blocklist() {
     # Find unique and duplicate domains in other blocklists
     comparison_table="| Unique | Blocklist |\n| ---:|:--- |\n"
     for blocklist in *_blocklist.tmp; do
-        name="${blocklist%_blocklist.tmp}"
+        blocklist_name="${blocklist%_blocklist.tmp}"
         # wc -l seems to work just fine here
-        unique_count="$(comm -23 compressed.tmp "${name}_blocklist.tmp" | wc -l)"
+        unique_count="$(comm -23 compressed.tmp "${blocklist_name}_blocklist.tmp" | wc -l)"
         unique_percentage="$(( unique_count * 100 / compressed_count ))"
-        comparison_table="${comparison_table}| ${unique_count} **(${unique_percentage}%)** | ${name} |\n"
+        comparison_table="${comparison_table}| ${unique_count} **(${unique_percentage}%)** | ${blocklist_name} |\n"
     done
 
     # Get the top TLDs
@@ -217,5 +219,9 @@ compile() {
     hostlist-compiler "$1" "$2" -o temp
     mawk '/^[|]/ {gsub(/[|^]/, "", $0); print $0}' temp | sort -u -o "$3"
 }
+
+# Entry point
+
+set -e
 
 main
