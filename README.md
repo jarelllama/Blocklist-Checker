@@ -40,7 +40,7 @@ The following [transformations](https://github.com/AdguardTeam/HostlistCompiler?
 
 These transformations remove redundant rules and strip modifiers to format the blocklist to domains.
 
-The percentage next to the count is the entries compressed from the total raw entries (a higher percentage means higher compression).
+The percentage next to the count is the entries compressed from the total raw entries (a higher percentage means higher compression done).
 
 Note that the compressed blocklist is used for all further processing.
 
@@ -94,4 +94,3 @@ The number of occurrences for the top 15 top-level domains (TLDs) in the compres
 Time taken in seconds to download the blocklist and generate the report.
 
 Note that the time taken to download dependencies/restore cache is excluded from this calculation.
-

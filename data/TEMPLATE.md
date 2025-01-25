@@ -46,10 +46,3 @@ TLDS
 Processing time: PROCESSING_TIME seconds
 
 *See the [README](https://github.com/jarelllama/Blocklist-Checker) for more information.*
-
-<details>
-<summary>Dev info</summary>
-
-Dead domains found in Hagezi's dead domains file: DEAD_CACHE_COUNT
-
-</details>

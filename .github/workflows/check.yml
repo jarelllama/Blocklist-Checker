@@ -18,33 +18,6 @@ jobs:
         with:
           ref: main
 
-      - name: Get date for caching
-        run: |
-          echo "DATE=$(date +%m%d)" >> $GITHUB_ENV
-          echo "MONTH=$(date +%m%Y)" >> $GITHUB_ENV
-
-      - name: Restore cached dependencies
-        id: restore-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            tranco.tmp
-            *_blocklist.tmp
-          # Restore cache when:
-          # - cache matches today's date
-          # - blocklists_to_compare.txt has not changed
-          key: dependencies-${{ env.DATE }}-${{ hashFiles('data/blocklists_to_compare.txt') }}
-
-      - name: Restore cached dependencies (monthly)
-        id: restore-cache-monthly
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ~/.npm
-            dead_cache.tmp
-          # Restore cache once a month
-          key: dependencies-${{ env.MONTH }}
-
       - name: Check blocklist
         run: |
           # On error
@@ -58,11 +31,8 @@ jobs:
           gh issue edit ${{ github.event.issue.number }} \
             --remove-label 'check blocklist' --add-label 'checking'
 
-          # Get URl of blocklist
-          url="$(grep 'http' <<< "${{ github.event.issue.body }}")"
-
-          # Generate report
-          bash scripts/check.sh "$url"
+          # Generate report for blocklist
+          bash scripts/check.sh "$(grep 'http' <<< "${{ github.event.issue.body }}")"
 
           # Comment report and close issue
           gh issue close ${{ github.event.issue.number }} -c \
@@ -74,22 +44,3 @@ jobs:
             --remove-label 'checking' --add-label 'report generated'
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: Cache dependencies
-        # Cache only if no cache restored
-        if: ${{ steps.restore-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            tranco.tmp
-            *_blocklist.tmp
-          key: dependencies-${{ env.DATE }}-${{ hashFiles('data/blocklists_to_compare.txt') }}
-
-      - name: Cache dependencies (monthly)
-        if: ${{ steps.restore-cache-monthly.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.npm
-            dead_cache.tmp
-          key: dependencies-${{ env.MONTH }}
