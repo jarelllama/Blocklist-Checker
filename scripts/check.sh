@@ -79,7 +79,7 @@ main() {
     (( entries_to_use > 10000 )) && entries_to_use=10000
 
     # Get random entries and check for dead domains using Dead Domains Linter
-    shuf -n "$entries_to_use" compressed.tmp | sed 's/.*/||&^/' | sort -o terp
+    shuf -n "$entries_to_use" compressed.tmp | sed 's/.*/||&^/' | sort -o temp
     dead-domains-linter -i temp --export dead_domains.tmp
 
     # Count number of dead domains
