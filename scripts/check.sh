@@ -32,7 +32,7 @@ main() {
             "$(mawk -F ',' '{print $2}' <<< "$blocklist")" \
             | sed 's/\r//g; s/[|\^]//g' | sort -u -o \
             "$(mawk -F ',' '{print $1}' <<< "$blocklist")_blocklist.tmp"
-    done <<< "$BLOCKLISTS_TO_COMPARE"
+    done < "$BLOCKLISTS_TO_COMPARE"
 
     execution_time="$(date +%s)"
 
